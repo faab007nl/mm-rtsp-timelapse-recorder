@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>RTSP Timelapse Recorder</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/styles.min.css">
+    <link rel="stylesheet" href="assets/css/alertifyjs/alertify.min.css">
+    <link rel="stylesheet" href="assets/css/alertifyjs/themes/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/7e57d508ec.js" crossorigin="anonymous"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js" defer></script>
+    <script src="assets/js/alertify.min.js" defer></script>
+    <script src="assets/js/enums.js" defer></script>
+    <script src="assets/js/scripts.js" defer></script>
+    <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
+</head>
+
+<body>
+    <h1 class="page-header"><img src="assets/img/logo.png" alt="MM Logo">RTSP Timelapse Recorder</h1>
+    <div class="recording">
+        <h3>Opname:</h3>
+        <div class="row">
+            <div class="col recording-controls">
+                <div class="controls">
+                    <div class="buttons">
+                        <button class="btn btn-success" type="button" data-pp-record-btn>Opname Starten</button>
+                        <button class="btn btn-danger" type="button" disabled data-stop-record-btn>Opname Stoppen</button>
+                    </div>
+                    <div class="time-limit">
+                        <label for="time-limit-input">Tijdslimiet (minuten):</label>
+                        <input type="number" id="time-limit-input" placeholder="Tijdslimiet (minuten)" data-time-limit-input data-disable-on-record>
+                        <small>Gebruik 0 voor geen limiet!</small>
+                        <label for="video-fps-input" class="mt-2">Video FPS:</label>
+                        <input type="number" id="video-fps-input" placeholder="Video FPS" data-video-fps-input data-disable-on-record>
+                        <small>Standard: 24</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col recording-info">
+                <div class="recording-details">
+                    <p><strong>Active Cameras:</strong> <span data-active-cameras-count>0</span></p>
+                    <p><strong>Opname Duur:</strong> <span data-recording-duration>00:00:00</span></p>
+                </div>
+            </div>
+            <div class="col docs">
+                <h1>Info:</h1>
+                <p>Deze app neemt een RTSP stream op en zet deze om naar een timelapse video.</p>
+            </div>
+        </div>
+    </div>
+    <div class="row d-flex">
+        <div class="col">
+            <div class="camera-list">
+                <h3>Cameras:</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Naam</th>
+                                <th>Url</th>
+                                <th>Interval</th>
+                                <th>Actief</th>
+                                <th>Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody data-camera-list-items>
+                        </tbody>
+                        <tfoot>
+                            <tr class="camera-add-row">
+                                <td>
+                                    <input type="text" class="form-control" placeholder="Camera toevoegen" data-camera-add-name-input data-disable-on-record>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" data-camera-add-url-input data-disable-on-record>
+                                </td>
+                                <td>
+                                    <select class="form-select" data-camera-add-interval-input data-disable-on-record>
+                                        <option value="2">Elke 2 sec</option>
+                                        <option value="5">Elke 5 sec</option>
+                                        <option value="10">Elke 10 sec</option>
+                                        <option value="15">Elke 15 sec</option>
+                                        <option value="20">Elke 20 sec</option>
+                                        <option value="25">Elke 25 sec</option>
+                                        <option value="30">Elke 30 sec</option>
+                                    </select>
+                                    <small>10 min opnemen is x min video</small>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" data-camera-add-active-input data-disable-on-record>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td class="camera-actions">
+                                    <div class="camera-add-btn" data-disable-on-record><i class="fa-solid fa-plus" onclick="window.addCameraFeed()"></i></div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

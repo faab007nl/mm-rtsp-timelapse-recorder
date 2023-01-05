@@ -1,0 +1,313 @@
+html, body{
+    overflow: hidden;
+}
+body{
+    padding: 15px;
+    width: 100vw;
+    height: 100vh;
+}
+.page-header{
+    color: rgb(0, 0, 0);
+}
+.page-header img{
+    height: 65px;
+    margin-right: 10px;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.add-input {
+    display: flex;
+    flex-direction: column
+}
+
+.add-camera {
+    margin-right: 20px;
+    margin-left: 10px
+}
+
+.add-camera-group {
+    width: fit-content;
+    display: flex;
+    flex-direction: column
+}
+
+.add-camera-group label {
+    font-weight: 700
+}
+
+.camera-list {
+    width: calc(100vw - 30px)
+}
+
+.recording {
+    margin-bottom: 50px;
+    width: 50vw
+}
+
+.recording .row{
+    width: calc(100vw - 30px)
+}
+
+.recording .recording-controls{
+    max-width: 340px;
+    min-width: 340px;
+    width: 340px;
+}
+
+.recording .docs{
+    margin-left: auto;
+}
+
+.recording-details {
+    margin-top: 20px
+}
+
+.recording-details p {
+    margin: 0
+}
+
+.camera-actions {
+    display: flex;
+    gap: 15px;
+    font-size: 25px
+}
+
+.download-btn:hover {
+    color: #696969;
+    cursor: pointer
+}
+
+.download-btn {
+    transition: .2s ease-in-out
+}
+
+.delete-btn {
+    color: red;
+    transition: .2s ease-in-out
+}
+
+.delete-btn:hover {
+    cursor: pointer;
+    color: #ff6161
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #fff;
+    -webkit-transition: .4s;
+    transition: .4s
+}
+
+input:checked + .slider {
+    background-color: #2196f3
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196f3
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px)
+}
+
+.slider.round {
+    border-radius: 34px
+}
+
+.slider.round:before {
+    border-radius: 50%
+}
+
+.camera-add-row{
+    border-top: 2px solid black;
+}
+.camera-add-btn{
+    transition: color 0.2s ease-in-out;
+}
+.camera-add-btn:hover{
+    cursor: pointer;
+    color: #696969;
+}
+.camera-add-btn[disabled]{
+    color: #696969;
+    cursor: not-allowed;
+}
+.camera-add-btn[disabled]:hover{
+    color: #696969;
+    cursor: not-allowed;
+}
+
+.controls{
+    display: flex;
+    flex-direction: column;
+}
+
+.controls .buttons{
+    display: flex;
+    gap: 5px;
+}
+.controls .time-limit{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.camera-add-btn[disabled]{
+    color: #696969;
+    cursor: not-allowed;
+}
+.camera-add-btn[disabled]:hover{
+    color: #696969;
+    cursor: not-allowed;
+}
+.camera-add-btn[disabled]{
+    color: #696969;
+    cursor: not-allowed;
+}
+.camera-add-btn[disabled]:hover{
+    color: #696969;
+    cursor: not-allowed;
+}
+.download-btn[disabled]{
+    color: #696969;
+    cursor: not-allowed;
+}
+.download-btn[disabled]:hover{
+    color: #696969;
+    cursor: not-allowed;
+}
+
+.delete-btn[disabled]{
+    color: #696969;
+    cursor: not-allowed;
+}
+.delete-btn[disabled]:hover{
+    color: #696969;
+    cursor: not-allowed;
+}
+
+input[type="checkbox"][disabled] + .slider{
+    background-color: #696969;
+}
+
+.table-responsive{
+    max-height: calc(100vh - 450px);
+    position: relative;
+    z-index: 55;
+}
+.table-responsive thead{
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    border: 1px solid white;
+}
+.list-group-item-action{
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 650px) {
+    html, body{
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .page-header{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    .table-responsive{
+        max-height: unset;
+    }
+    .table-responsive .table{
+        width: 800px;
+    }
+    .table-responsive .row-name{
+        width: 20%;
+    }
+    .table-responsive .row-url{
+
+    }
+    .table-responsive .row-interval{
+
+    }
+    .table-responsive .row-active{
+
+    }
+    .table-responsive .camera-actions{
+
+    }
+    .recording{
+        margin-bottom: 10px;
+    }
+    .recording .recording-controls{
+        max-width: calc(100vw - 15px);
+        min-width: calc(100vw - 15px);
+        width: calc(100vw - 15px);
+    }
+    .recording-details {
+        max-width: calc(100vw - 15px);
+        min-width: calc(100vw - 15px);
+        width: calc(100vw - 15px);
+        margin-bottom: 10px;
+    }
+    .recording .docs{
+        max-width: calc(100vw - 15px);
+        min-width: calc(100vw - 15px);
+        width: calc(100vw - 15px);
+    }
+}
