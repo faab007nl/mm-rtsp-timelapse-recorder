@@ -44,6 +44,7 @@ const takeScreenshot = (name, url) => {
         emptyDir(dir);
     }
 
+    console.log(`Taking screenshot for ${name}...`);
     rec.captureImage((filePath) => {
         if(cameraImgNumbering[name] === undefined) {
             cameraImgNumbering[name] = 1;
@@ -56,6 +57,8 @@ const takeScreenshot = (name, url) => {
         let newFileName = `image_${cameraImgNumbering[name]}${fileExtension}`;
         let newFilePath = `${folderPath}\\${newFileName}`;
 
+        console.log(`Image saved to ${filePath} for ${name}`);
+        console.log(`Renaming ${filePath} to ${newFilePath} for ${name}`);
         if(fileExists(filePath)) {
             moveFile(filePath, newFilePath);
         }

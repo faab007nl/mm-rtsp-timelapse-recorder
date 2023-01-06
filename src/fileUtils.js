@@ -50,15 +50,6 @@ const getScreenshotDir = () => {
 const getVideoDir = () => {
     return videoDir;
 }
-const getCameraDateFolders = async (cameraId) => {
-    let cameraFeeds = await getCameraFeeds();
-    let cameraFeed = cameraFeeds.find(cameraFeed => cameraFeed.id === parseInt(cameraId));
-    if (cameraFeed === undefined) return [];
-    let cameraName = cameraFeed.name.toLowerCase().replace(/ /g, '_');
-
-    let dir = `${getScreenshotDir()}/${cameraName}`;
-    return readDir(dir);
-}
 const fileExists = (path) => {
     return fs.existsSync(path);
 }
@@ -84,7 +75,6 @@ exports.createFolder = createFolder;
 exports.readDir = readDir;
 exports.getScreenshotDir = getScreenshotDir;
 exports.getVideoDir = getVideoDir;
-exports.getCameraDateFolders = getCameraDateFolders;
 exports.fileExists = fileExists;
 exports.isFolderEmpty = isFolderEmpty;
 exports.deleteFile = deleteFile;

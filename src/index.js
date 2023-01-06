@@ -6,7 +6,7 @@ const app = express();
 const { getCameraFeeds, createDbTables, insertCameraFeed, updateCameraFeedKey, deleteCameraFeed, getSetting, setSetting,
     deleteSetting
 } = require('./sql');
-const { createDirs, getCameraDateFolders, fileExists} = require('./fileUtils');
+const { createDirs, fileExists, readDir, getScreenshotDir} = require('./fileUtils');
 const {handleCameraFeeds, setCurrentSeconds, getCurrentSeconds, resetCameraImgNumbering, resetCameraFirstRun,
     generateVideo, getGenerateVideoStatus
 } = require("./feedManager");
@@ -168,7 +168,13 @@ app.get('/api/video/dates', async function (req, res) {
         return;
     }
 
-    let dates = await getCameraDateFolders(id);
+    let cameraFeeds = await getCameraFeeds();
+    let cameraFeed = cameraFeeds.find(cameraFeed => cameraFeed.id === parseInt(id));
+    if (cameraFeed === undefined) return [];
+    let cameraName = cameraFeed.name.toLowerCase().replace(/ /g, '_');
+
+    let datesDir = `${getScreenshotDir()}/${cameraName}`;
+    let dates = readDir(datesDir);
     res.json({
         status: 'ok',
         dates,

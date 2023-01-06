@@ -40,7 +40,7 @@ const deleteCameraFeed = (id) => {
     });
 }
 const getCameraFeeds = async () => {
-    if (db === null) return null;
+    if (db === null) return [];
     return await new Promise((resolve, reject) => {
         db.serialize(() => {
             db.all('SELECT * FROM ' + cameraFeedTableName, (err, rows) => {
@@ -73,7 +73,7 @@ const setSetting = (key, value) => {
     });
 }
 const settingExists = async (key) => {
-    if (db === null) return null;
+    if (db === null) return false;
     return await new Promise((resolve, reject) => {
         db.serialize(() => {
             db.get('SELECT value FROM ' + settingsTableName + ' WHERE `key` = ?', [key], (err, row) => {
