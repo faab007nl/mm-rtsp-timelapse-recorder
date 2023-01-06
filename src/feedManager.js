@@ -1,7 +1,7 @@
 const {exec} = require("child_process");
 const {getCameraFeeds, getSetting} = require("./sql");
 const {Recorder} = require("../libs/node-rtsp-recorder");
-const {getScreenshotDir, getVideoDir, createFolder, renameFile, emptyDir, fileExists, isFolderEmpty, moveFile,
+const {getScreenshotDir, getVideoDir, createFolder, emptyDir, fileExists, isFolderEmpty, moveFile,
     deleteFile
 } = require("./fileUtils");
 const path = require("path");
