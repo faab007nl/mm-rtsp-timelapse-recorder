@@ -54,8 +54,8 @@ const takeScreenshot = (name, url) => {
 
         let folderPath = path.parse(filePath).dir;
         let fileExtension = path.parse(filePath).ext;
-        let newFileName = `image_${cameraImgNumbering[name]}${fileExtension}`;
-        let newFilePath = `${folderPath}\\${newFileName}`;
+        let newFileName = `image_${cameraImgNumbering[name]}${fileExtension}`
+        let newFilePath = path.join(folderPath, newFileName);
 
         console.log(`Image saved to ${filePath} for ${name}`);
         console.log(`Renaming ${filePath} to ${newFilePath} for ${name}`);
