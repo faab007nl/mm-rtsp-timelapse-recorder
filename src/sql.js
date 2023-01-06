@@ -1,4 +1,4 @@
-const {createFolder, waitForFolderToExist} = require("./fileUtils");
+const {waitForFolderToExist} = require("./fileUtils");
 const sqlite3 = require('sqlite3').verbose();
 let db = null;
 

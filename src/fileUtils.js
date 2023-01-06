@@ -1,5 +1,4 @@
 const fs = require("fs-extra");
-const {getCameraFeeds} = require("./sql");
 const path = require("path");
 
 const screenshotsDir = './data/screenshots';
