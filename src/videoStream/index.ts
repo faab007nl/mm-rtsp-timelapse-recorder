@@ -33,9 +33,9 @@ export class VideoStream extends EventEmitter {
     if(this.wsServer) {
         this.wsServer.close();
     }
-    this.stream.kill()
-    this.inputStreamStarted = false
-    return this
+     this.stream.kill();
+    this.inputStreamStarted = false;
+    return this;
   }
 
   private startMpeg1Stream() {
@@ -124,28 +124,25 @@ export class VideoStream extends EventEmitter {
   }
 
   private onSocketConnect(socket: any, request: any) {
-    let streamHeader;
-    // Send magic bytes and video size to the newly connected socket
-    // struct { char magic[4]; unsigned short width, height;}
-    streamHeader = new Buffer(8)
-    streamHeader.write(this.STREAM_MAGIC_BYTES)
+    let streamHeader = new Buffer(8);
+    streamHeader.write(this.STREAM_MAGIC_BYTES);
     if (this.options.width != null) {
-      streamHeader.writeUInt16BE(this.options.width, 4)
+      streamHeader.writeUInt16BE(this.options.width, 4);
     }
     if (this.options.height != null) {
-      streamHeader.writeUInt16BE(this.options.height, 6)
+      streamHeader.writeUInt16BE(this.options.height, 6);
     }
     socket.send(streamHeader, {
       binary: true
-    })
+    });
     //console.log(`${this.name}: New WebSocket Connection (` + this.wsServer.clients.size + " total)")
 
-    socket.remoteAddress = request.connection.remoteAddress
+    socket.remoteAddress = request.connection.remoteAddress;
 
     return socket.on("close", (code: number, message: string) => {
       let size = 0;
       if (this.wsServer) {
-          size = this.wsServer.clients.size
+          size = this.wsServer.clients.size;
       }
 
       let msg = `${this.options.name}: Disconnected WebSocket (${size} total)`;

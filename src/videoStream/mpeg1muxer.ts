@@ -61,7 +61,7 @@ export class Mpeg1Muxer extends EventEmitter {
 
     this.stream.on('exit', (code, signal) => {
       if (code === 1) {
-        console.error('RTSP stream exited with error')
+        //console.error('RTSP stream exited with error')
         this.exitCode = 1
         return this.emit('exitWithError')
       }
