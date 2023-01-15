@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>RTSP Timelapse Recorder</title>
+    <script type="text/javascript" src="./assets/js/jsmpeg.min.js"></script>
     <!-- CSS files -->
     <script src="https://kit.fontawesome.com/7e57d508ec.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
@@ -196,11 +197,18 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <canvas id="canvas" class="view-camera-video"></canvas>
-            <script type="text/javascript" src="./assets/js/jsmpeg.min.js"></script>
+            <canvas id="canvas1" class="view-camera-video"></canvas>
             <script type="text/javascript">
               player = new JSMpeg.Player('ws://localhost:3001/stream', {
-                canvas: document.getElementById('canvas'),
+                canvas: document.getElementById('canvas1'),
+                audio: false,
+              });
+            </script>
+
+            <canvas id="canvas2" class="view-camera-video"></canvas>
+            <script type="text/javascript">
+              player = new JSMpeg.Player('ws://localhost:3002/stream', {
+                canvas: document.getElementById('canvas2'),
                 audio: false,
               });
             </script>

@@ -7,8 +7,7 @@ const init = () => {
     createFolder(Config.screenshotsDir);
     createFolder(Config.videoDir);
 
-    // @ts-ignore
-    let stream = new VideoStream({
+    let stream1 = new VideoStream({
         name: 'camera1',
         url: 'rtsp://10.0.0.1:7447/zlFbL8rgFImEfUVF',
         wsPort: 3001,
@@ -17,7 +16,20 @@ const init = () => {
             '-r': 30
         }
     });
-    stream.on('camdata', (data: any) => {
+    stream1.on('camdata', (data: any) => {
+        //console.log("got camera data");
+    });
+
+    let stream2 = new VideoStream({
+        name: 'camera2',
+        url: 'rtsp://10.0.0.1:7447/CUaxoTjcEK8XpbMp',
+        wsPort: 3002,
+        ffmepgOptions: {
+            '-stats': '',
+            '-r': 30
+        }
+    });
+    stream2.on('camdata', (data: any) => {
         //console.log("got camera data");
     });
 }
