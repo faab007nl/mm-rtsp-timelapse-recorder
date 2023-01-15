@@ -1,7 +1,6 @@
-// @ts-ignore
-import {VideoStream} from "./videoStream";
 import {createFolder} from "./fileUtils";
 import {Config} from "./config";
+import {VideoStream} from "./videoStream";
 
 const init = () => {
     createFolder(Config.dataDir);
@@ -9,14 +8,17 @@ const init = () => {
     createFolder(Config.videoDir);
 
     // @ts-ignore
-    new VideoStream({
+    let stream = new VideoStream({
         name: 'camera1',
-        streamUrl: 'rtsp://10.0.0.1:7447/zlFbL8rgFImEfUVF',
+        url: 'rtsp://10.0.0.1:7447/zlFbL8rgFImEfUVF',
         wsPort: 3001,
-        ffmpegOptions: {
+        ffmepgOptions: {
             '-stats': '',
             '-r': 30
         }
+    });
+    stream.on('camdata', (data: any) => {
+        //console.log("got camera data");
     });
 }
 
