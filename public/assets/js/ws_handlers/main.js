@@ -1,7 +1,7 @@
 const handleMainAction = (action, data) => {
     switch (action) {
         case 'init':
-            alertify.notify('Ready', 'success', 2);
+            alertify.notify('Connection Ready', 'success', 2);
             break;
     }
 }
