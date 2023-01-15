@@ -1,0 +1,68 @@
+.w-6{
+    width: 5rem;
+}
+.w-7{
+    width: 6rem;
+}
+.w-8{
+    width: 7rem;
+}
+.w-9{
+    width: 8rem;
+}
+.w-10{
+    width: 9rem;
+}
+.w-11{
+    width: 10rem;
+}
+.w-12{
+    width: 11rem;
+}
+.w-13{
+    width: 12rem;
+}
+.w-14{
+    width: 13rem;
+}
+.w-15{
+    width: 14rem;
+}
+
+.view-camera-btn{
+    transition: color 200ms ease-in-out;
+    color: #1e293b;
+}
+.view-camera-btn:hover{
+    cursor: pointer;
+    color: #19396e;
+}
+.delete-btn{
+    transition: color 200ms ease-in-out;
+    color: #d63939;
+}
+.delete-btn:hover{
+    cursor: pointer;
+    color: #d26363;
+}
+
+.video-btn{
+    transition: color 200ms ease-in-out;
+    color: #1e293b;
+}
+.video-btn:hover{
+    cursor: pointer;
+    color: #19396e;
+}
+.download-btn{
+    transition: color 200ms ease-in-out;
+    color: #1e293b;
+}
+.download-btn:hover{
+    cursor: pointer;
+    color: #19396e;
+}
+
+.view-camera-video{
+    width: 100%;
+}

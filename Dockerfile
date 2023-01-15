@@ -18,4 +18,4 @@ RUN npm install
 
 EXPOSE 3378
 
-CMD [ "node", "src/index.js" ]
+CMD [ "node", "src/index.ts" ]
