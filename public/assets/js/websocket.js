@@ -1,13 +1,22 @@
 import handleMainAction from "./ws_handlers/main.js";
 import handleCameraAction from "./ws_handlers/cameras.js";
 
+window.ws_connected = false;
+let ws_disconnected_msg_send = false;
+
 window.ws_connect = () => {
     window.ws = new WebSocket(`ws://${window.config.ws_host}:${window.config.ws_port}/ws`);
     window.ws.onopen = function() {
-        alertify.notify('Connected', 'success', 2);
+        window.ws_connected = true;
+        ws_disconnected_msg_send = false;
     }
     window.ws.onclose = function() {
-        alertify.notify('Disconnected', 'error', 2);
+        if (!ws_disconnected_msg_send){
+            ws_disconnected_msg_send = true;
+            alertify.notify('Disconnected', 'error', 5);
+        }
+        window.ws_connected = false;
+
         setTimeout(function() {
             window.ws_connect();
         }, 1000);
