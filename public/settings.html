@@ -13,7 +13,7 @@
     <link href="assets/css/tabler.css" rel="stylesheet"/>
     <link href="assets/css/custom.css" rel="stylesheet"/>
   </head>
-  <body >
+  <body>
     <div class="wrapper">
       <header class="navbar navbar-expand-md navbar-light d-print-none">
         <div class="container-xl">
@@ -43,7 +43,7 @@
                     </span>
                   </a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
                   <a class="nav-link" href="/cameras.html" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                       <i class="fa-solid fa-video"></i>
@@ -53,7 +53,7 @@
                     </span>
                   </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                   <a class="nav-link" href="/settings.html">
                     <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                       <i class="fa-solid fa-gear"></i>
@@ -74,96 +74,17 @@
             <div class="row align-items-center">
               <div class="col">
                 <h2 class="page-title">
-                  Cameras
+                  Instellingn
                 </h2>
               </div>
             </div>
           </div>
         </div>
         <div class="page-body">
-          <div class="container-xl">
-            <div class="row row-deck row-cards">
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title">Cameras</h3>
-                    <div class="col-auto ms-auto d-print-none">
-                      <div class="btn-list">
-                        <a href="#" class="btn btn-primary d-none d-sm-inline-block d-flex gap-1" data-bs-toggle="modal" data-bs-target="#add-camera-model">
-                          <i class="fa-solid fa-plus"></i>
-                          Camera Toevoegen
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="table-responsive">
-                    <table class="table card-table table-vcenter text-nowrap datatable">
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th class="w-15">Naam</th>
-                          <th>Url</th>
-                          <th class="w-5">Interval (Sec)</th>
-                          <th class="w-5">Camera</th>
-                          <th class="w-5">Actief</th>
-                          <th class="w-5"></th>
-                        </tr>
-                      </thead>
-                      <tbody data-camera-list></tbody>
-                    </table>
-                  </div>
-                  <div class="card-footer d-flex align-items-center">
-                    <p class="m-0 text-muted">Showing <span data-cameras-count>0</span> cameras</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
         </div>
     </div>
     </div>
-
-    <div class="modal modal-blur" id="add-camera-model" tabindex="-1">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Camera Toevoegen</h5>
-          </div>
-          <div class="modal-body">
-            <div class="errors" data-add-camera-errors-div></div>
-            <div class="row">
-              <div class="col-lg-8">
-                <div class="mb-3">
-                  <label for="camera-name-input" class="form-label">Name</label>
-                  <input id="camera-name-input" type="text" class="form-control" data-add-camera-name-input>
-                </div>
-              </div>
-              <div class="col-lg-4">
-                <div class="mb-3">
-                  <label for="camera-interval-input" class="form-label">Interval (Sec)</label>
-                  <input id="camera-interval-input" type="number" class="form-control" value="1" min="1" max="59" data-add-camera-interval-input>
-                </div>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="camera-url-input" class="form-label">Url</label>
-              <input id="camera-url-input" type="text" class="form-control" data-add-camera-url-input>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <a href="#" class="btn btn-link link-secondary" data-add-camera-close-btn data-bs-dismiss="modal">
-              Annuleren
-            </a>
-            <div class="btn btn-primary ms-auto d-flex gap-1" data-add-camera-btn>
-              <i class="fa-solid fa-plus"></i>
-              Toevoegen
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="models" data-camera-models-div></div>
 
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
     <script src="assets/js/tabler.js"></script>

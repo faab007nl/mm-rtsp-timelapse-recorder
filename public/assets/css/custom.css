@@ -66,3 +66,9 @@
 .view-camera-video{
     width: 100%;
 }
+
+.errors{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

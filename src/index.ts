@@ -3,9 +3,13 @@ import * as http from 'http';
 import * as WebSocket from 'ws';
 import * as path from 'path';
 import { init } from "./common";
+import handleCameraRoutes from "./ws_routes/camera";
+import {WsMessage} from "./include/interfaces";
+import { uuid as uuidv4 } from 'uuidv4';
 
 const app = express();
 const port = 8080;
+const server_uuid = uuidv4();
 
 //initialize a simple http server
 const server = http.createServer(app);
@@ -18,8 +22,12 @@ const wss = new WebSocket.Server({
 
 wss.on('connection', (ws: WebSocket) => {
     ws.on('message', (message: string) => {
-        let data = JSON.parse(message);
-        console.log(data);
+        let data: WsMessage = <WsMessage>JSON.parse(message);
+        switch (data.category) {
+            case 'camera':
+                handleCameraRoutes(ws, data);
+                break;
+        }
     });
 
     ws.send(JSON.stringify({
@@ -36,3 +44,7 @@ server.listen(port, () => {
 
     console.log(`Server started on port ${port} :)`);
 });
+
+export const getServerUUID = () => {
+    return server_uuid;
+}

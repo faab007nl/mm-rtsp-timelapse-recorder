@@ -1,14 +1,19 @@
 import handleMainAction from "./ws_handlers/main.js";
-import handleCameraAction from "./ws_handlers/cameras.js";
+import {handleCameraAction, requestCameraList} from "./ws_handlers/cameras.js";
+import {uid} from "./utils.js";
+import {addCameraFormInit} from "./add_camera.js";
 
+window.client_id = uid();
 window.ws_connected = false;
 let ws_disconnected_msg_send = false;
+window.ws = undefined;
 
 window.ws_connect = () => {
     window.ws = new WebSocket(`ws://${window.config.ws_host}:${window.config.ws_port}/ws`);
     window.ws.onopen = function() {
         window.ws_connected = true;
         ws_disconnected_msg_send = false;
+        wsReady();
     }
     window.ws.onclose = function() {
         if (!ws_disconnected_msg_send){
@@ -29,6 +34,7 @@ window.ws_connect = () => {
     // On message received
     window.ws.onmessage = function(event) {
         let message = JSON.parse(event.data);
+        if(message.to !== window.client_id && message.to !== 'all') return;
         handleWsMessage(message);
     }
 }
@@ -48,6 +54,11 @@ const handleWsMessage = (message) => {
         default:
             console.error('Unknown category', category);
     }
+}
+
+const wsReady = () => {
+    addCameraFormInit();
+    requestCameraList();
 }
 
 window.ws_connect();
