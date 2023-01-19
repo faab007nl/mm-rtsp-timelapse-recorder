@@ -10,6 +10,7 @@ interface VideoStreamOptions {
   height?: number;
   ffmepgOptions?: { [key: string]: string|number; };
   ffmpegPath?: string;
+  autoStart?: boolean;
 }
 
 export class VideoStream extends EventEmitter {
@@ -21,21 +22,32 @@ export class VideoStream extends EventEmitter {
   private inputStreamStarted: boolean = false;
   private STREAM_MAGIC_BYTES: string = "jsmp";
   private broadcast: ((data: any, opts?: any) => object) | undefined = undefined;
+  private streamTimedOut: boolean = false;
 
   constructor(options: VideoStreamOptions) {
     super();
     this.options = options;
+    if (options.autoStart !== undefined && options.autoStart) {
+        this.start();
+    }
+  }
+
+  public start() {
     this.startMpeg1Stream();
     this.pipeStreamToSocketServer();
   }
 
-  private stop() {
+  public stop() {
     if(this.wsServer) {
         this.wsServer.close();
     }
-     this.stream.kill();
+    this.stream.kill();
     this.inputStreamStarted = false;
     return this;
+  }
+
+  public isStreamTimedOut(): boolean {
+    return this.streamTimedOut;
   }
 
   private startMpeg1Stream() {
@@ -80,11 +92,32 @@ export class VideoStream extends EventEmitter {
         }
       }
     });
-    this.mpeg1Muxer.on('ffmpegStderr', function(data: any) {
+
+    let timeoutSet = false;
+    this.mpeg1Muxer.on('ffmpegStderr', (data: any) => {
+      // disabled console logs about ffmpeg stream
+
+      // Check if stream is available
+      let timeout = null;
+      if(!timeoutSet) {
+        timeoutSet = true;
+        timeout = setTimeout(() => {
+          this.streamTimedOut = true;
+          if(this.wsServer){
+            this.emit('streamTimedOut');
+          }
+        }, 15000);
+      }
+      if(data.includes("fps=")){
+        if(timeout) {
+          clearTimeout(timeout);
+        }
+      }
+
       return global.process.stderr.write(data);
     });
-    this.mpeg1Muxer.on('exitWithError', () => {
-      return this.emit('exitWithError');
+    this.mpeg1Muxer.on('exitWithError', (data: any) => {
+      return this.emit('exitWithError', data);
     });
     return this;
   }

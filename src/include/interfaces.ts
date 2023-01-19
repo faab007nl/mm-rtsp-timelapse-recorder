@@ -1,3 +1,4 @@
+import {VideoStream} from "../videoStream";
 
 export interface CameraFeed {
     id: number;
@@ -5,7 +6,7 @@ export interface CameraFeed {
     url: string;
     interval: number;
     wsPort: number;
-    active: boolean;
+    active?: boolean;
 }
 
 export interface Setting {
@@ -23,4 +24,14 @@ export interface WsMessage {
 
 export interface WsResponse extends WsMessage {
     to: string;
+}
+
+export interface ActiveCameraStream {
+    id: number;
+    wsPort: number;
+    stream: VideoStream;
+}
+
+export interface ActiveCameraStreams {
+    [key: number]: ActiveCameraStream;
 }

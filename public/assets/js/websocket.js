@@ -1,5 +1,7 @@
-import handleMainAction from "./ws_handlers/main.js";
+import {handleMainAction} from "./ws_handlers/main.js";
+import {handleHomeAction} from "./ws_handlers/home.js";
 import {handleCameraAction, requestCameraList} from "./ws_handlers/cameras.js";
+import {handleSettingsAction} from "./ws_handlers/settings.js";
 import {uid} from "./utils.js";
 import {addCameraFormInit} from "./add_camera.js";
 
@@ -48,8 +50,18 @@ const handleWsMessage = (message) => {
         case 'main':
             handleMainAction(action, data);
             break;
+        case 'home':
+            handleHomeAction(action, data);
+            break;
         case 'camera':
             handleCameraAction(action, data);
+            break;
+        case 'settings':
+            handleSettingsAction(action, data);
+            break;
+        case 'error':
+            let message = data.message;
+            alertify.notify(message, 'error', 2);
             break;
         default:
             console.error('Unknown category', category);

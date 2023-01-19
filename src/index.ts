@@ -5,11 +5,11 @@ import * as path from 'path';
 import { init } from "./common";
 import handleCameraRoutes from "./ws_routes/camera";
 import {WsMessage} from "./include/interfaces";
-import { uuid as uuidv4 } from 'uuidv4';
+import { v4 } from 'uuid';
 
 const app = express();
 const port = 8080;
-const server_uuid = uuidv4();
+const server_uuid = v4();
 
 //initialize a simple http server
 const server = http.createServer(app);

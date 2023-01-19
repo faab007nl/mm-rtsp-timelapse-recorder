@@ -46,7 +46,7 @@ export class Mpeg1Muxer extends EventEmitter {
     ];
 
     this.stream = child_process.spawn(this.options.ffmpegPath, this.spawnOptions, {
-      detached: false
+      detached: false,
     });
 
     this.inputStreamStarted = true;
@@ -56,14 +56,16 @@ export class Mpeg1Muxer extends EventEmitter {
     });
 
     this.stream.stderr.on('data', (data) => {
-      return this.emit('ffmpegStderr', data)
+      //return this.emit('ffmpegStderr', data)
     });
 
     this.stream.on('exit', (code, signal) => {
       if (code === 1) {
-        //console.error('RTSP stream exited with error')
         this.exitCode = 1
-        return this.emit('exitWithError')
+        return this.emit('exitWithError', {
+          code: code,
+          message: "RTSP stream exited with error code 1"
+        });
       }
     });
   }

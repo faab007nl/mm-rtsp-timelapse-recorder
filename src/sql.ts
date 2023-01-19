@@ -63,6 +63,22 @@ export const getCameraFeeds = async (): Promise<CameraFeed[]> => {
     });
 }
 
+export const getCameraFeed = async (id: number): Promise<CameraFeed|null> => {
+    if (db === null) return null;
+    return await new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.get('SELECT * FROM ' + cameraFeedTableName + ' WHERE `id` = ?', [id], (err, row) => {
+                if (err) reject(err);
+                if (row !== undefined) {
+                    resolve(<CameraFeed>row);
+                } else {
+                    resolve(null);
+                }
+            });
+        });
+    });
+}
+
 export const getSetting = async (key: string): Promise<Setting|null> => {
     if (db === null) return null;
     return await new Promise((resolve, reject) => {

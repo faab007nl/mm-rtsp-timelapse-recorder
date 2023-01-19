@@ -80,7 +80,7 @@ const renderCameraList = (data) => {
           </td>
           <td>
             <label class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" data-edit-camera-active-input>
+              <input class="form-check-input" type="checkbox" ${camera.active ? "checked" : ""} data-edit-camera-active-input>
             </label>
           </td>
           <td class="d-flex gap-2">
@@ -132,22 +132,69 @@ const renderCameraList = (data) => {
           <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Stream Bekijken</h5>
+                <h5 class="modal-title">Stream Bekijken - ${camera.name}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <canvas id="camera-canvas-${camera.wsPort}" class="view-camera-video"></canvas>
-                <script type="text/javascript">
-                  player1 = new JSMpeg.Player('ws://${window.config.ws_host}:${camera.wsPort}/stream', {
-                    canvas: document.getElementById('camera-canvas-${camera.wsPort}'),
-                    audio: false,
-                  });
-                </script>
+                <div class="video-container">
+                    <div class="video-error hidden" data-view-camera-error-div-${camera.id}>
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span data-view-camera-error-msg-${camera.id}>Unknown Error</span>
+                    </div>
+                
+                    <div class="video-loader" data-video-loader-${camera.id}>
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <span>Loading Camera...</span>
+                    </div>
+                    
+                    <div id="camera-wrapper-${camera.wsPort}" class="view-camera-video hidden"></div>
+                </div>
               </div>
             </div>
           </div>
         `;
         cameraModelsDiv.appendChild(viewModelDiv);
+
+        const viewCameraErrorDiv = viewModelDiv.querySelector(`[data-view-camera-error-div-${camera.id}]`);
+        const viewCameraErrorMsgDiv = viewModelDiv.querySelector(`[data-view-camera-error-msg-${camera.id}]`);
+        const videoLoaderDiv = viewModelDiv.querySelector(`[data-video-loader-${camera.id}]`);
+        const videoCanvas = viewModelDiv.querySelector(`#camera-wrapper-${camera.wsPort}`);
+
+        let JsMpegPlayer = null;
+
+        if(camera.active){
+            let errorTimeout = setTimeout(() => {
+                viewCameraErrorDiv.classList.remove('hidden');
+                viewCameraErrorMsgDiv.innerText = 'Camera is offline';
+                videoLoaderDiv.classList.add('hidden');
+            }, 2000);
+
+            viewModelDiv.addEventListener('show.bs.modal', () => {
+                JsMpegPlayer = new JSMpeg.VideoElement(
+                    videoCanvas,
+                    `ws://${window.config.ws_host}:${camera.wsPort}/stream`,
+                    {
+                        hooks: {
+                            load: () => {
+                                videoLoaderDiv.classList.add('hidden');
+                                viewCameraErrorDiv.classList.add('hidden');
+                                videoCanvas.classList.remove('hidden');
+                                clearTimeout(errorTimeout);
+                            }
+                        }
+                    }
+                );
+            });
+            viewModelDiv.addEventListener('hidden.bs.modal', () => {
+                if(JsMpegPlayer !== undefined && JsMpegPlayer !== null) {
+                    JsMpegPlayer.destroy();
+                }
+            });
+        }else{
+            viewCameraErrorDiv.classList.remove('hidden');
+            viewCameraErrorMsgDiv.innerText = 'De camera is op dit moment niet actief';
+            videoLoaderDiv.classList.add('hidden');
+        }
     });
 
     const deleteCameraBtns = document.querySelectorAll('[data-delete-camera]');
