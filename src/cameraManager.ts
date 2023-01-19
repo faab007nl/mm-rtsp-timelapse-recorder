@@ -1,7 +1,13 @@
 import {ActiveCameraStreams, CameraFeed} from "./include/interfaces";
 import {VideoStream} from "./videoStream";
+import {RecordingStatus} from "./include/enums";
+
+const maxRecordingDuration = 1000 * 60 * 5; // 5 minutes
 
 let activeCameraStreams: ActiveCameraStreams = {};
+let recordingStatus: RecordingStatus = RecordingStatus.STOPPED;
+let recordingTimeout: NodeJS.Timeout|null = null;
+let recordingDuration = 0;
 
 export const activateCamera = (cameraFeed: CameraFeed, errorCallback: any) => {
     if (activeCameraStreams[cameraFeed.id] === undefined || activeCameraStreams[cameraFeed.id] === null) {
@@ -17,17 +23,16 @@ export const activateCamera = (cameraFeed: CameraFeed, errorCallback: any) => {
         });
 
         cameraStream.on('camdata', (data: any) => {
-            console.log("got camera data");
-            console.log(data);
+            handleCameraData(cameraFeed, data);
         });
         cameraStream.on('streamTimedOut', (data: any) => {
             deactivateCamera(cameraFeed);
             errorCallback( {
                 message: "Stream timed out",
-            }, "timeout");
+            });
         });
         cameraStream.on('exitWithError', (data: any) => {
-            console.log("", "event error", data);
+            deactivateCamera(cameraFeed);
             errorCallback(data);
         });
 
@@ -55,4 +60,45 @@ export const getActiveCameraStreams = (): ActiveCameraStreams => {
 
 export const cameraStreamActive = (cameraFeed: CameraFeed): boolean => {
     return activeCameraStreams[cameraFeed.id] !== undefined && activeCameraStreams[cameraFeed.id] !== null;
+}
+
+const handleCameraData = (cameraFeed: CameraFeed, data: any) => {
+    if(recordingStatus !== RecordingStatus.RECORDING) return;
+
+    if(recordingDuration >= maxRecordingDuration){
+        stopRecording();
+        return;
+    }
+
+    if (recordingDuration % cameraFeed.interval === 0) {
+        console.log("Take Screenshot");
+    }
+
+    //console.log("Recording: ", cameraFeed.name);
+}
+
+export const getRecordingStatus = (): RecordingStatus => {
+    return recordingStatus;
+}
+
+export const getRecordingDuration = (): number => {
+    return recordingDuration;
+}
+
+export const startRecording = () => {
+    recordingStatus = RecordingStatus.RECORDING;
+    recordingDuration = 0;
+    recordingTimeout = setInterval(() => {
+        recordingDuration++;
+    });
+}
+
+export const stopRecording = () => {
+    recordingStatus = RecordingStatus.STOPPED;
+    recordingDuration = 0;
+
+    if(recordingTimeout){
+        clearInterval(recordingTimeout);
+        recordingTimeout = null;
+    }
 }

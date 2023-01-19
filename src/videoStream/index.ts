@@ -126,10 +126,10 @@ export class VideoStream extends EventEmitter {
     this.wsServer = new WsServer({
       port: this.options.wsPort,
       path: '/stream'
-    })
+    });
     this.wsServer.on("connection", (socket: any, request: any) => {
       return this.onSocketConnect(socket, request)
-    })
+    });
     this.broadcast = function(data, opts) {
       let results;
       results = [];
@@ -141,19 +141,18 @@ export class VideoStream extends EventEmitter {
           } else {
             // @ts-ignore
             let msg = "Error: Client from remoteAddress " + client.remoteAddress + " not connected.";
-            //console.log(msg);
             results.push(msg);
           }
         }
       }
-      return results
-    }
+      return results;
+    };
     return this.on('camdata', (data) => {
         if (this.broadcast) {
           return this.broadcast(data);
         }
         return null;
-    })
+    });
   }
 
   private onSocketConnect(socket: any, request: any) {
@@ -168,7 +167,6 @@ export class VideoStream extends EventEmitter {
     socket.send(streamHeader, {
       binary: true
     });
-    //console.log(`${this.name}: New WebSocket Connection (` + this.wsServer.clients.size + " total)")
 
     socket.remoteAddress = request.connection.remoteAddress;
 
@@ -177,10 +175,7 @@ export class VideoStream extends EventEmitter {
       if (this.wsServer) {
           size = this.wsServer.clients.size;
       }
-
-      let msg = `${this.options.name}: Disconnected WebSocket (${size} total)`;
-      //console.log(msg);
-      return msg;
+      return `${this.options.name}: Disconnected WebSocket (${size} total)`;
     });
   }
 

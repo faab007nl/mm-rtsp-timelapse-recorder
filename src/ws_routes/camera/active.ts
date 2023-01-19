@@ -24,11 +24,8 @@ const active = async (ws: WebSocket, req: WsMessage) => {
     }
 
     if (active) {
-        activateCamera(camera, (data: any, errorKey: string) => {
-            if(errorKey === "timeout"){
-                list(ws, req);
-            }
-
+        activateCamera(camera, (data: any) => {
+            list(ws, req);
             let response: WsResponse = {
                 from: getServerUUID(),
                 to: req.from,
