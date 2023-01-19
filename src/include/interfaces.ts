@@ -10,7 +10,6 @@ export interface CameraFeed {
 }
 
 export interface Setting {
-    id: number;
     key: string;
     value: string;
 }

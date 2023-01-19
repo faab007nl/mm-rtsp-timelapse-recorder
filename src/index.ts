@@ -6,6 +6,7 @@ import { init } from "./common";
 import handleCameraRoutes from "./ws_routes/camera";
 import {WsMessage} from "./include/interfaces";
 import { v4 } from 'uuid';
+import handleSettingsRoutes from "./ws_routes/settings";
 
 const app = express();
 const port = 8080;
@@ -26,6 +27,9 @@ wss.on('connection', (ws: WebSocket) => {
         switch (data.category) {
             case 'camera':
                 handleCameraRoutes(ws, data);
+                break;
+            case 'settings':
+                handleSettingsRoutes(ws, data);
                 break;
         }
     });

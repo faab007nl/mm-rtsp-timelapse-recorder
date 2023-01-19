@@ -73,16 +73,105 @@
             <div class="row align-items-center">
               <div class="col">
                 <h2 class="page-title">
-                  Instellingn
+                  Instellingen
                 </h2>
               </div>
             </div>
           </div>
         </div>
         <div class="page-body">
+          <div class="container-xl">
+            <div class="row row-cards">
 
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Video Export</h3>
+                  </div>
+                  <div class="card-body">
+                    <div class="mb-3">
+                      <label for="settings-video-export-fps-input" class="form-label required">FPS</label>
+                      <div>
+                        <input id="settings-video-export-fps-input" type="number" min="1" max="240" class="form-control" data-settings-video-export-fps-input>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+<!--              <div class="col-md-6">-->
+<!--                <div class="card">-->
+<!--                  <div class="card-header">-->
+<!--                    <h3 class="card-title">Danger Zone</h3>-->
+<!--                  </div>-->
+<!--                  <div class="card-body">-->
+<!--                    <div class="mb-3 row w-50 ms-0">-->
+<!--                      <div class="btn btn-danger d-none d-sm-inline-block d-flex gap-1" data-bs-toggle="modal" data-bs-target="#restart-node-confirm">-->
+<!--                        Applicatie herstarten-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3 row w-50 ms-0">-->
+<!--                      <div class="btn btn-danger d-none d-sm-inline-block d-flex gap-1" data-bs-toggle="modal" data-bs-target="#restart-server-confirm">-->
+<!--                        Server herstarten-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+
+            </div>
+          </div>
         </div>
     </div>
+    </div>
+
+    <div class="models">
+      <div class="modal modal-blur" id="restart-node-confirm" tabindex="-1">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">App Herstarten</h5>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <p>Weet je zeker dat je de applicatie wilt herstarten?</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <div class="btn btn-link link-secondary" data-settings-restart-node-close-btn data-bs-dismiss="modal">
+                Annuleren
+              </div>
+              <div class="btn btn-danger ms-auto d-flex gap-1" data-settings-restart-node-btn>
+                Applicatie Herstarten
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="models">
+      <div class="modal modal-blur" id="restart-server-confirm" tabindex="-1">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Server Herstarten</h5>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <p>Weet je zeker dat je de server wilt herstarten?</p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <div class="btn btn-link link-secondary" data-settings-restart-server-close-btn data-bs-dismiss="modal">
+                Annuleren
+              </div>
+              <div class="btn btn-danger ms-auto d-flex gap-1" data-settings-restart-server-btn>
+                Server Herstarten
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>

@@ -1,4 +1,4 @@
-import {addCamera} from "./ws_handlers/cameras.js";
+import {addCamera} from "../ws_handlers/cameras.js";
 
 export const addCameraFormInit = () => {
     const addCameraNameInput = document.querySelector('[data-add-camera-name-input]');

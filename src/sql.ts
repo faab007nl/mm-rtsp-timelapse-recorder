@@ -94,12 +94,14 @@ export const getSetting = async (key: string): Promise<Setting|null> => {
         });
     });
 }
+
 export const setSetting = (setting: Setting): void => {
     if (db === null) return;
     db.serialize(() => {
         db.run('INSERT OR REPLACE INTO '+settingsTableName+' (`key`, `value`) VALUES (?, ?)', [setting.key, setting.value]);
     });
 }
+
 export const settingExists = async (key: string): Promise<boolean> => {
     if (db === null) return false;
     return await new Promise((resolve, reject) => {
@@ -111,6 +113,7 @@ export const settingExists = async (key: string): Promise<boolean> => {
         });
     });
 }
+
 export const deleteSetting = (key: string): void => {
     if (db === null) return;
     db.serialize(() => {

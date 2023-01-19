@@ -58,17 +58,17 @@ const renderCameraList = (data) => {
           <td>${camera.id}</td>
           <td>
             <label class="w-full">
-              <input type="text" class="form-control w-full" value="${camera.name}" data-edit-camera-name-input>
+              <input type="text" class="form-control w-full" value="${camera.name}" data-edit-camera-name-input ${camera.active ? "disabled" : ""}>
             </label>
           </td>
           <td>
             <label class="w-full">
-              <input type="text" class="form-control w-full" value="${camera.url}" data-edit-camera-url-input>
+              <input type="text" class="form-control w-full" value="${camera.url}" data-edit-camera-url-input ${camera.active ? "disabled" : ""}>
             </label>
           </td>
           <td>
             <label class="w-full">
-              <input type="number" min="1" max="59" class="form-control w-full" value="${camera.interval}"  data-edit-camera-interval-input>
+              <input type="number" min="1" max="59" class="form-control w-full" value="${camera.interval}"  data-edit-camera-interval-input ${camera.active ? "disabled" : ""}>
             </label>
           </td>
           <td class="d-flex gap-2">
@@ -107,10 +107,10 @@ const renderCameraList = (data) => {
                 <p>Deze actie is niet meer terug te draaien!</p>
               </div>
               <div class="modal-footer">
-                <a href="#" class="btn btn-primary" data-bs-dismiss="modal">
+                <div class="btn btn-primary" data-bs-dismiss="modal">
                   Annuleren
-                </a>
-                <div 
+                </div>
+                <div
                     class="btn btn-danger ms-auto d-flex gap-1" 
                     data-bs-dismiss="modal"
                     data-camera-id="${camera.id}"
