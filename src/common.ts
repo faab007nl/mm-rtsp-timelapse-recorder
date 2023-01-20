@@ -1,12 +1,17 @@
 import {createFolder} from "./fileUtils";
 import {Config} from "./config";
 import {createDbTables} from "./sql";
+import {initCameraManager} from "./cameraManager";
 
 const init = () => {
     createFolder(Config.dataDir);
     createFolder(Config.screenshotsDir);
     createFolder(Config.videoDir);
     createDbTables();
+
+    setTimeout(() => {
+        initCameraManager();
+    }, 500);
 }
 
 const getRandomPort = () => {

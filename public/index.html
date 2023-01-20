@@ -85,12 +85,12 @@
               <div class="col-sm-6 col-lg-3">
                 <div class="card">
                   <div class="card-body d-flex flex-column gap-2">
-                    <a href="#" class="btn btn-success w-full">
+                    <div class="btn btn-success w-full" data-start-recording>
                       Opname Starten
-                    </a>
-                    <a href="#" class="btn btn-danger w-full disabled">
+                    </div>
+                    <div class="btn btn-danger w-full disabled" data-stop-recording>
                       Opname Stoppen
-                    </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -99,7 +99,7 @@
                   <div class="card-body">
                     <h1>Opname Duur (Min)</h1>
                     <label class="w-full">
-                      <input type="number" class="form-control w-full" value="0">
+                      <input type="number" class="form-control w-full" value="0" data-max-recording-duration-input>
                     </label>
                   </div>
                 </div>
@@ -107,7 +107,7 @@
               <div class="col-sm-6 col-lg-3">
                 <div class="card">
                   <div class="card-body">
-                    <h1>00:00:00</h1>
+                    <h1 data-recording-duration>00:00:00</h1>
                     <p class="text-muted">Opname tijd</p>
                   </div>
                 </div>
@@ -115,7 +115,7 @@
               <div class="col-sm-6 col-lg-3">
                 <div class="card">
                   <div class="card-body">
-                    <h1>0/0</h1>
+                    <h1><span data-active-camera-count>0</span>/<span data-total-camera-count>0</span></h1>
                     <p class="text-muted">Cameras actief</p>
                   </div>
                 </div>
@@ -179,7 +179,8 @@
     </div>
 
     <!-- Tabler Core -->
-    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <script src="assets/js/alertify.min.js"></script>
+    <script src="assets/js/moment.js"></script>
     <script src="assets/js/tabler.js"></script>
     <script src="assets/js/config.js"></script>
     <script src="assets/js/websocket.js" type="module"></script>

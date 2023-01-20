@@ -34,3 +34,10 @@ export interface ActiveCameraStream {
 export interface ActiveCameraStreams {
     [key: number]: ActiveCameraStream;
 }
+
+export interface Recording {
+    id: number;
+    name: string;
+    duration: number;
+    datetime: number;
+}

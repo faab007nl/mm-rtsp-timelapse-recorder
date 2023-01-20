@@ -1,13 +1,18 @@
 import {ActiveCameraStreams, CameraFeed} from "./include/interfaces";
 import {VideoStream} from "./videoStream";
 import {RecordingStatus} from "./include/enums";
+import {getSetting} from "./sql";
 
-const maxRecordingDuration = 1000 * 60 * 5; // 5 minutes
-
+let maxRecordingDuration = 0;
 let activeCameraStreams: ActiveCameraStreams = {};
 let recordingStatus: RecordingStatus = RecordingStatus.STOPPED;
 let recordingTimeout: NodeJS.Timeout|null = null;
 let recordingDuration = 0;
+
+export const initCameraManager = async () => {
+    const max_recording_duration = await getSetting('max_recording_duration') ?? { value: 0 };
+    maxRecordingDuration = parseInt(`${max_recording_duration.value}`) * 60;
+}
 
 export const activateCamera = (cameraFeed: CameraFeed, errorCallback: any) => {
     if (activeCameraStreams[cameraFeed.id] === undefined || activeCameraStreams[cameraFeed.id] === null) {
@@ -58,6 +63,10 @@ export const getActiveCameraStreams = (): ActiveCameraStreams => {
     return activeCameraStreams;
 }
 
+export const getActiveCameraStreamsCount = (): number => {
+    return Object.keys(activeCameraStreams).length
+}
+
 export const cameraStreamActive = (cameraFeed: CameraFeed): boolean => {
     return activeCameraStreams[cameraFeed.id] !== undefined && activeCameraStreams[cameraFeed.id] !== null;
 }
@@ -90,7 +99,10 @@ export const startRecording = () => {
     recordingDuration = 0;
     recordingTimeout = setInterval(() => {
         recordingDuration++;
-    });
+        if(recordingDuration >= maxRecordingDuration){
+            stopRecording();
+        }
+    }, 1000);
 }
 
 export const stopRecording = () => {

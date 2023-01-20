@@ -1,7 +1,9 @@
-import {restartNode, restartServer, updateVideoExportFps} from "../ws_handlers/settings.js";
+import {requestSettings, restartNode, restartServer, updateVideoExportFps} from "../ws_handlers/settings.js";
 
 export const settingsInit = () => {
     const videoExportInput = document.querySelector('[data-settings-video-export-fps-input]');
+
+    requestSettings();
 
     videoExportInput.addEventListener('change', (e) => {
         updateVideoExportFps(e.target, e.target.value);
@@ -19,5 +21,4 @@ export const settingsInit = () => {
         restartServer();
         restartServerCloseBtn.click();
     });
-
 }
