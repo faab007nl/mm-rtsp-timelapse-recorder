@@ -7,6 +7,7 @@ export interface CameraFeed {
     interval: number;
     wsPort: number;
     active?: boolean;
+    disabled?: boolean;
 }
 
 export interface Setting {
@@ -37,7 +38,7 @@ export interface ActiveCameraStreams {
 
 export interface Recording {
     id: number;
-    name: string;
+    uid: string;
     duration: number;
     datetime: number;
 }

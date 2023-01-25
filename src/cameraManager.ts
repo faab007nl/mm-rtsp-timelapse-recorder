@@ -1,13 +1,17 @@
-import {ActiveCameraStreams, CameraFeed} from "./include/interfaces";
+import {ActiveCameraStreams, CameraFeed, Recording} from "./include/interfaces";
 import {VideoStream} from "./videoStream";
 import {RecordingStatus} from "./include/enums";
-import {getSetting} from "./sql";
+import {getCameraFeed, getSetting, insertRecording, updateRecordingDuration} from "./sql";
+import {startCameraCapture, stopCameraCapture} from "./videoStream/rtspStreamManager";
+import {v4} from "uuid";
 
 let maxRecordingDuration = 0;
 let activeCameraStreams: ActiveCameraStreams = {};
 let recordingStatus: RecordingStatus = RecordingStatus.STOPPED;
 let recordingTimeout: NodeJS.Timeout|null = null;
 let recordingDuration = 0;
+let lastCameraScreenshot: any = {};
+let activeRecording: Recording|null = null;
 
 export const initCameraManager = async () => {
     const max_recording_duration = await getSetting('max_recording_duration') ?? { value: 0 };
@@ -15,6 +19,7 @@ export const initCameraManager = async () => {
 }
 
 export const activateCamera = (cameraFeed: CameraFeed, errorCallback: any) => {
+    if(cameraFeed === undefined || cameraFeed === null) return;
     if (activeCameraStreams[cameraFeed.id] === undefined || activeCameraStreams[cameraFeed.id] === null) {
         let cameraStream = new VideoStream({
             name: cameraFeed.name,
@@ -73,17 +78,7 @@ export const cameraStreamActive = (cameraFeed: CameraFeed): boolean => {
 
 const handleCameraData = (cameraFeed: CameraFeed, data: any) => {
     if(recordingStatus !== RecordingStatus.RECORDING) return;
-
-    if(recordingDuration >= maxRecordingDuration){
-        stopRecording();
-        return;
-    }
-
-    if (recordingDuration % cameraFeed.interval === 0) {
-        console.log("Take Screenshot");
-    }
-
-    //console.log("Recording: ", cameraFeed.name);
+    lastCameraScreenshot[cameraFeed.id] = data;
 }
 
 export const getRecordingStatus = (): RecordingStatus => {
@@ -94,20 +89,56 @@ export const getRecordingDuration = (): number => {
     return recordingDuration;
 }
 
-export const startRecording = () => {
+export const startRecording = async () => {
     recordingStatus = RecordingStatus.RECORDING;
     recordingDuration = 0;
+
+    const recording: Recording = {
+        id: -1,
+        uid: v4(),
+        duration: 0,
+        datetime: Date.now()
+    };
+    recording.id = await insertRecording(recording);
+
+    activeRecording = recording;
+
+    for (const [key, value] of Object.entries(activeCameraStreams)) {
+        let cameraFeedId = parseInt(key);
+        let cameraFeed = await getCameraFeed(cameraFeedId);
+        if(cameraFeed === null) continue;
+
+        startCameraCapture(cameraFeed, recording);
+    }
+
     recordingTimeout = setInterval(() => {
         recordingDuration++;
-        if(recordingDuration >= maxRecordingDuration){
+        if (recordingDuration >= maxRecordingDuration) {
+            console.log("Custom max recording duration reached")
             stopRecording();
         }
+        if (recordingDuration >= 43200) {
+            console.log("Max recording duration reached")
+            stopRecording();
+        }
+        if (activeRecording === null) return;
+
+        activeRecording.duration = recordingDuration;
+        updateRecordingDuration(activeRecording);
     }, 1000);
 }
 
-export const stopRecording = () => {
+export const stopRecording = async () => {
     recordingStatus = RecordingStatus.STOPPED;
     recordingDuration = 0;
+
+    for (const [key, value] of Object.entries(activeCameraStreams)) {
+        let cameraFeedId = parseInt(key);
+        let cameraFeed = await getCameraFeed(cameraFeedId);
+        if(cameraFeed === null) continue;
+
+        stopCameraCapture(cameraFeed);
+    }
 
     if(recordingTimeout){
         clearInterval(recordingTimeout);

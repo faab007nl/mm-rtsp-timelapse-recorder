@@ -126,12 +126,28 @@ export const deleteSetting = (key: string): void => {
     });
 }
 
-export const insertRecording = (recording: Recording): void => {
+export const insertRecording = async (recording: Recording): Promise<number> => {
+    if (db === null || db === undefined) return -1;
+    return await new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.run(
+                'INSERT INTO '+recordingsTableName+' (`name`, `duration`, `datetime`) VALUES (?, ?, ?)',
+                [recording.uid, recording.duration, recording.datetime]
+            );
+            db.get('SELECT last_insert_rowid() as id', (err, row) => {
+                if (err) reject(err);
+                resolve(row.id);
+            });
+        });
+    });
+}
+
+export const updateRecordingDuration = (recording: Recording): void => {
     if (db === null || db === undefined) return;
     db.serialize(() => {
         db.run(
-            'INSERT INTO '+recordingsTableName+' (`name`, `duration`, `datetime`) VALUES (?, ?, ?)',
-            [recording.name, recording.duration, recording.datetime]
+            'UPDATE '+recordingsTableName+' SET `duration` = ? WHERE `id` = ?',
+            [recording.duration, recording.id]
         );
     });
 }

@@ -58,17 +58,17 @@ const renderCameraList = (data) => {
           <td>${camera.id}</td>
           <td>
             <label class="w-full">
-              <input type="text" class="form-control w-full" value="${camera.name}" data-edit-camera-name-input ${camera.active ? "disabled" : ""}>
+              <input type="text" class="form-control w-full" value="${camera.name}" data-edit-camera-name-input ${camera.active || camera.disabled ? "disabled" : ""}>
             </label>
           </td>
           <td>
             <label class="w-full">
-              <input type="text" class="form-control w-full" value="${camera.url}" data-edit-camera-url-input ${camera.active ? "disabled" : ""}>
+              <input type="text" class="form-control w-full" value="${camera.url}" data-edit-camera-url-input ${camera.active || camera.disabled ? "disabled" : ""}>
             </label>
           </td>
           <td>
             <label class="w-full">
-              <input type="number" min="1" max="59" class="form-control w-full" value="${camera.interval}"  data-edit-camera-interval-input ${camera.active ? "disabled" : ""}>
+              <input type="number" min="1" max="59" class="form-control w-full" value="${camera.interval}"  data-edit-camera-interval-input ${camera.active || camera.disabled ? "disabled" : ""}>
             </label>
           </td>
           <td class="d-flex gap-2">
@@ -80,7 +80,7 @@ const renderCameraList = (data) => {
           </td>
           <td>
             <label class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" ${camera.active ? "checked" : ""} data-edit-camera-active-input>
+              <input class="form-check-input" type="checkbox" ${camera.active ? "checked" : ""} ${camera.disabled ? "disabled" : ""} data-edit-camera-active-input>
             </label>
           </td>
           <td class="d-flex gap-2">

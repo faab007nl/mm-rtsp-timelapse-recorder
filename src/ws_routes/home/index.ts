@@ -3,7 +3,6 @@ import {WsMessage} from "../../include/interfaces";
 import get_status from "./get_status";
 import stop_recording from "./stop_recording";
 import recordings from "./recordings";
-import add_recording from "./add_recording";
 import delete_recording from "./delete_recording";
 import start_recording from "./start_recording";
 
@@ -20,9 +19,6 @@ const handleHomeRoutes = (ws: WebSocket, data: WsMessage) => {
             break;
         case 'recordings':
             recordings(ws, data);
-            break;
-        case 'add_recording':
-            add_recording(ws, data);
             break;
         case 'delete_recording':
             delete_recording(ws, data);
