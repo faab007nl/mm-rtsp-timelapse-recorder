@@ -2,7 +2,11 @@ import {ActiveCameraStreams, CameraFeed, Recording} from "./include/interfaces";
 import {VideoStream} from "./videoStream";
 import {RecordingStatus} from "./include/enums";
 import {getCameraFeed, getSetting, insertRecording, updateRecordingDuration} from "./sql";
-import {startCameraCapture, stopCameraCapture} from "./videoStream/rtspStreamManager";
+import {
+    convertScreenshotsToVideo,
+    startCameraCapture,
+    stopCameraCapture
+} from "./videoStream/rtspStreamManager";
 import {v4} from "uuid";
 
 let maxRecordingDuration = 0;
@@ -137,6 +141,9 @@ export const stopRecording = async () => {
         let cameraFeed = await getCameraFeed(cameraFeedId);
         if(cameraFeed === null) continue;
 
+        if(activeRecording !== null){
+            //await convertScreenshotsToVideo(cameraFeed, activeRecording);
+        }
         stopCameraCapture(cameraFeed);
     }
 
@@ -144,4 +151,6 @@ export const stopRecording = async () => {
         clearInterval(recordingTimeout);
         recordingTimeout = null;
     }
+
+    activeRecording = null;
 }

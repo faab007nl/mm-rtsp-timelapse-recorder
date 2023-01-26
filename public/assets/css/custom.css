@@ -118,3 +118,76 @@
 .hidden{
     display: none;
 }
+
+.data-tooltip{
+    position: relative;
+    overflow: visible;
+}
+.data-tooltip-text {
+    visibility: hidden;
+    position: absolute;
+    z-index: 99;
+    width: fit-content;
+    color: white;
+    font-size: 12px;
+    background-color: #192733;
+    border-radius: 10px;
+    padding: 10px 15px 10px 15px;
+}
+.data-tooltip:hover .data-tooltip-text {
+    visibility: visible;
+}
+.data-tooltip-text[data-top] {
+    top: -40px;
+}
+.data-tooltip-text[data-top]:after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #192733 transparent transparent transparent;
+}
+.data-tooltip-text[data-bottom] {
+    top: 25px;
+}
+.data-tooltip-text[data-bottom]:after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #192733 transparent;
+}
+.data-tooltip-text[data-left] {
+    top: -8px;
+    right: 120%;
+}
+.data-tooltip-text[data-left]:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent transparent #192733;
+}
+.data-tooltip-text[data-right] {
+    top: -8px;
+    left: 120%;
+}
+.data-tooltip-text[data-right]:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #192733 transparent transparent;
+}

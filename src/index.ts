@@ -10,7 +10,7 @@ import handleSettingsRoutes from "./ws_routes/settings";
 import handleHomeRoutes from "./ws_routes/home";
 
 const app = express();
-const port = 8080;
+const port = 4322;
 const server_uuid = v4();
 
 //initialize a simple http server

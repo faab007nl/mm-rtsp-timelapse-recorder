@@ -1,4 +1,5 @@
 import {VideoStream} from "../videoStream";
+import {RecordingVideoStatus} from "./enums";
 
 export interface CameraFeed {
     id: number;
@@ -41,4 +42,5 @@ export interface Recording {
     name: string;
     duration: number;
     datetime: number;
+    video_status?: RecordingVideoStatus;
 }

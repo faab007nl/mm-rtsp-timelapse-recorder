@@ -55,6 +55,10 @@ const waitForFolderToExist = (path: string): Promise<boolean> => {
     });
 }
 
+const getFilesCount = (path: string): number => {
+    return fs.readdirSync(path).length;
+}
+
 export {
     emptyDir,
     moveFile,
@@ -66,4 +70,5 @@ export {
     fileExists,
     isFolderEmpty,
     waitForFolderToExist,
+    getFilesCount
 }
