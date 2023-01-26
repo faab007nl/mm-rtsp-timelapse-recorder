@@ -1,5 +1,5 @@
 window.config = {
-    ws_host: 'localhost',
+    ws_host: '10.0.0.99',
     ws_port: 4322
 }
 alertify.defaults = {
