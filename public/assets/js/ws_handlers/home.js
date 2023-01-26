@@ -18,6 +18,9 @@ export const handleHomeAction = (action, data) => {
         case "recording_stoppen":
             alertify.notify('Opname gestopt', 'success', 2);
             break;
+        case "recordings":
+            updateRecordings(data);
+            break;
     }
 }
 
@@ -49,12 +52,59 @@ const updateMaxRecordingDuration = (data) => {
     maxRecordingDurationInput.value = data.max_recording_duration;
 }
 
+const updateRecordings = (data) => {
+    const recordingsContainer = document.querySelector('[data-recordings-container]');
+
+    let recordings = data.recordings.reverse();
+    recordingsContainer.innerHTML = '';
+
+    recordings.forEach(recording => {
+        const row = document.createElement('div');
+        row.classList.add('row');
+
+        row.innerHTML = `
+            <div class="col-auto">
+                <span class="avatar bg-info">
+                    <i class="fa-solid fa-video text-white"></i>
+                </span>
+            </div>
+            <div class="col">
+                <div class="text-truncate">
+                    ${recording.name} <span class="badge bg-blue">${moment.utc(recording.duration * 1000).format('HH:mm:ss')}</span>
+                </div>
+                <div class="text-muted">${moment(recording.datetime).format('DD-MM-YYYY h:mm:ss')} (started ${moment(recording.datetime).fromNow()})</div>
+            </div>
+            <div class="col-auto d-flex gap-2 fs-1">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#view-camera-video-model">
+                    <div class="video-btn">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                </a>
+                <div class="video-btn">
+                    <i class="fa-solid fa-download"></i>
+                </div>
+            </div>
+        `;
+        recordingsContainer.append(row);
+    });
+}
+
 export const requestStatus = () => {
     if(window.ws === undefined) return;
     window.ws.send(JSON.stringify({
         from: window.client_id,
         category: 'home',
         action: 'get_status',
+        data: {}
+    }));
+}
+
+export const requestRecordings = () => {
+    if(window.ws === undefined) return;
+    window.ws.send(JSON.stringify({
+        from: window.client_id,
+        category: 'home',
+        action: 'recordings',
         data: {}
     }));
 }

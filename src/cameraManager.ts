@@ -95,7 +95,7 @@ export const startRecording = async () => {
 
     const recording: Recording = {
         id: -1,
-        uid: v4(),
+        name: v4(),
         duration: 0,
         datetime: Date.now()
     };
@@ -113,7 +113,7 @@ export const startRecording = async () => {
 
     recordingTimeout = setInterval(() => {
         recordingDuration++;
-        if (recordingDuration >= maxRecordingDuration) {
+        if (maxRecordingDuration !== 0 && recordingDuration >= maxRecordingDuration) {
             console.log("Custom max recording duration reached")
             stopRecording();
         }

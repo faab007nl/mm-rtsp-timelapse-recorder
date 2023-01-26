@@ -132,7 +132,7 @@ export const insertRecording = async (recording: Recording): Promise<number> => 
         db.serialize(() => {
             db.run(
                 'INSERT INTO '+recordingsTableName+' (`name`, `duration`, `datetime`) VALUES (?, ?, ?)',
-                [recording.uid, recording.duration, recording.datetime]
+                [recording.name, recording.duration, recording.datetime]
             );
             db.get('SELECT last_insert_rowid() as id', (err, row) => {
                 if (err) reject(err);

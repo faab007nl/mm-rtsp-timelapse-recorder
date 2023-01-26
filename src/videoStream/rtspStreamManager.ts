@@ -9,7 +9,7 @@ let activeCameraStreams: any = {};
 export const startCameraCapture = (cameraFeed: CameraFeed, recording: Recording) => {
     if(cameraFeed === undefined || cameraFeed === null) return;
 
-    createFolder(`data/screenshots/${recording.uid}/`);
+    createFolder(`data/screenshots/${recording.name}/`);
 
     if (activeCameraStreams[cameraFeed.id] === undefined || activeCameraStreams[cameraFeed.id] === null) {
         let process = child_process.spawn("ffmpeg", [
@@ -19,7 +19,7 @@ export const startCameraCapture = (cameraFeed: CameraFeed, recording: Recording)
             cameraFeed.url,
             "-vf",
             `fps=1/${cameraFeed.interval}`,
-            `data/screenshots/${recording.uid}/img%03d.jpg`
+            `data/screenshots/${recording.name}/img%03d.jpg`
         ], {
             detached: false,
         });
@@ -44,20 +44,20 @@ export const convertScreenshotsToVideo = async (cameraFeed: CameraFeed, recordin
     if (activeCameraStreams[cameraFeed.id] === undefined || activeCameraStreams[cameraFeed.id] === null) return;
     const export_fps = await getSetting('export_fps') ?? { value: 24 };
 
-    createFolder(`data/videos/${recording.uid}/`);
+    createFolder(`data/videos/${recording.name}/`);
 
     let process = child_process.spawn("ffmpeg", [
         "-framerate",
         `${export_fps.value}`,
         "-i",
-        `data/screenshots/${recording.uid}/img%03d.jpg`,
+        `data/screenshots/${recording.name}/img%03d.jpg`,
         "-c:v",
         "libx264",
         "-r",
         "30",
         "-pix_fmt",
         "yuv420p",
-        `data/videos/${recording.uid}/timelapse.mp4`
+        `data/videos/${recording.name}/timelapse.mp4`
     ], {
         detached: false,
     });

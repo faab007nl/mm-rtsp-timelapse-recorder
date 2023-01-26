@@ -38,7 +38,7 @@ export interface ActiveCameraStreams {
 
 export interface Recording {
     id: number;
-    uid: string;
+    name: string;
     duration: number;
     datetime: number;
 }

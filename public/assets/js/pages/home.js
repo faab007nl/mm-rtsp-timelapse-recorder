@@ -2,7 +2,8 @@ import {
     requestStatus,
     requestMaxRecordingDuration, setMaxRecordingDuration,
     startRecording,
-    stopRecording
+    stopRecording,
+    requestRecordings,
 } from "../ws_handlers/home.js";
 
 export const homeInit = () => {
@@ -23,5 +24,8 @@ export const homeInit = () => {
     setInterval(() => {
         requestStatus();
     }, 500);
+    setInterval(() => {
+        requestRecordings();
+    }, 1000);
     requestMaxRecordingDuration();
 }
