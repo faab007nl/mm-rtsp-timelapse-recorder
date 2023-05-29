@@ -1,4 +1,3 @@
-import {VideoStream} from "../videoStream";
 import {RecordingVideoStatus} from "./enums";
 
 export interface CameraFeed {
@@ -6,6 +5,8 @@ export interface CameraFeed {
     name: string;
     url: string;
     interval: number;
+    activeFrom: number;
+    activeTo: number;
     wsPort: number;
     active?: boolean;
     disabled?: boolean;
@@ -30,7 +31,6 @@ export interface WsResponse extends WsMessage {
 export interface ActiveCameraStream {
     id: number;
     wsPort: number;
-    stream: VideoStream;
 }
 
 export interface ActiveCameraStreams {

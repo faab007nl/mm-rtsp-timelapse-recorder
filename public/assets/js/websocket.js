@@ -1,11 +1,11 @@
 import {handleMainAction} from "./ws_handlers/main.js";
-import {handleHomeAction} from "./ws_handlers/home.js";
+import {handleRecordingsAction} from "./ws_handlers/recordings.js";
 import {handleCameraAction, requestCameraList} from "./ws_handlers/cameras.js";
 import {handleSettingsAction} from "./ws_handlers/settings.js";
 import {uid} from "./utils.js";
 import {addCameraFormInit} from "./pages/add_camera.js";
 import {settingsInit} from "./pages/settings.js";
-import {homeInit} from "./pages/home.js";
+import {recordingInit} from "./pages/recordings.js";
 
 window.client_id = uid();
 window.ws_connected = false;
@@ -53,7 +53,7 @@ const handleWsMessage = (message) => {
             handleMainAction(action, data);
             break;
         case 'home':
-            handleHomeAction(action, data);
+            handleRecordingsAction(action, data);
             break;
         case 'camera':
             handleCameraAction(action, data);
@@ -74,16 +74,15 @@ const wsReady = () => {
 
     const page_name = window.location.pathname;
     if(page_name === '/') {
-        homeInit();
-    }
-    if(page_name === '/cameras.html') {
         addCameraFormInit();
         requestCameraList();
+    }
+    if(page_name === '/recordings.html') {
+        recordingInit();
     }
     if(page_name === '/settings.html') {
         settingsInit();
     }
-
 
 }
 

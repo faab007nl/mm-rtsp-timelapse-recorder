@@ -45,6 +45,14 @@
     cursor: pointer;
     color: #d26363;
 }
+.btn-disabled{
+    cursor: not-allowed;
+    color: #a0aec0;
+}
+.btn-disabled:hover{
+    cursor: not-allowed;
+    color: #a0aec0;
+}
 
 .video-btn{
     transition: color 200ms ease-in-out;

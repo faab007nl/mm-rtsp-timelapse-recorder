@@ -1,0 +1,23 @@
+## TODO:
+
+- make popup when activating camera (to enter recording name)
+- make camera to actually record
+  - take a screencapture of the camara every x minutes
+  - process running every minute
+    - check if camera is active
+    - check if within activeFrom and activeTo
+    - if yes, take a screenshot
+- make recordings page
+  - list of recordings
+  - watch recording
+  - delete recording
+  - export recording
+  - table columns
+    - name
+    - camera name
+    - start date & time
+    - end date & time
+    - duration
+    - total screenshots
+    - actions (watch, delete, export)
+- notification recording active reminder (email?)

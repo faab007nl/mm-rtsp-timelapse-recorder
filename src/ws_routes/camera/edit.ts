@@ -15,6 +15,16 @@ const edit = (ws: WebSocket, req: WsMessage) => {
     if (data.interval !== null && data.interval !== undefined) {
         updateCameraFeedValue(data.id, 'interval', data.interval);
     }
+    if (data.activeFrom !== null && data.activeFrom !== undefined) {
+        let activeFromParts = data.activeFrom.split(':');
+        let activeFromMinutes = parseInt(activeFromParts[0]) * 60 + parseInt(activeFromParts[1]);
+        updateCameraFeedValue(data.id, 'activeFrom', `${activeFromMinutes}`);
+    }
+    if (data.activeTo !== null && data.activeTo !== undefined) {
+        let activeToParts = data.activeTo.split(':');
+        let activeToMinutes = parseInt(activeToParts[0]) * 60 + parseInt(activeToParts[1]);
+        updateCameraFeedValue(data.id, 'activeTo', `${activeToMinutes}`);
+    }
 
     let response: WsResponse = {
         from: getServerUUID(),

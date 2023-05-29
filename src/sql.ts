@@ -14,7 +14,7 @@ export const createDbTables = (): void => {
         db = new sqlite3.Database('data/data.db');
 
         db.serialize(() => {
-            db.run('CREATE TABLE IF NOT EXISTS '+cameraFeedTableName+' (id INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `url` TEXT, `interval` INTEGER, `wsPort` INTEGER)');
+            db.run('CREATE TABLE IF NOT EXISTS '+cameraFeedTableName+' (id INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `url` TEXT, `interval` INTEGER, `activeFrom` INTEGER, `activeTo` INTEGER, `wsPort` INTEGER)');
             db.run('CREATE TABLE IF NOT EXISTS '+settingsTableName+' (id INTEGER PRIMARY KEY AUTOINCREMENT, `key` TEXT, `value` TEXT, UNIQUE(`key`))');
             db.run('CREATE TABLE IF NOT EXISTS '+recordingsTableName+' (id INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `duration` INTEGER, `datetime` INTEGER)');
         });
@@ -24,8 +24,8 @@ export const insertCameraFeed = (cameraFeed: CameraFeed): void => {
     if (db === null || db === undefined) return;
     db.serialize(() => {
         db.run(
-            'INSERT INTO '+cameraFeedTableName+' (`name`, `url`, `interval`, `wsPort`) VALUES (?, ?, ?, ?)',
-            [cameraFeed.name, cameraFeed.url, cameraFeed.interval, cameraFeed.wsPort]
+            'INSERT INTO '+cameraFeedTableName+' (`name`, `url`, `interval`, `activeFrom`, `activeTo`, `wsPort`) VALUES (?, ?, ?, ?, ?, ?)',
+            [cameraFeed.name, cameraFeed.url, cameraFeed.interval, cameraFeed.activeFrom, cameraFeed.activeTo, cameraFeed.wsPort]
         );
     });
 }

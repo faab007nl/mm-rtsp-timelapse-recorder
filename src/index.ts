@@ -7,7 +7,7 @@ import handleCameraRoutes from "./ws_routes/camera";
 import {WsMessage} from "./include/interfaces";
 import { v4 } from 'uuid';
 import handleSettingsRoutes from "./ws_routes/settings";
-import handleHomeRoutes from "./ws_routes/home";
+import handleRecordingRoutes from "./ws_routes/recordings";
 
 const app = express();
 const port = 4322;
@@ -26,11 +26,11 @@ wss.on('connection', (ws: WebSocket) => {
     ws.on('message', (message: string) => {
         let data: WsMessage = <WsMessage>JSON.parse(message);
         switch (data.category) {
-            case 'home':
-                handleHomeRoutes(ws, data);
-                break;
             case 'camera':
                 handleCameraRoutes(ws, data);
+                break;
+            case 'recording':
+                handleRecordingRoutes(ws, data);
                 break;
             case 'settings':
                 handleSettingsRoutes(ws, data);

@@ -10,7 +10,7 @@ const init = () => {
     createDbTables();
 
     setTimeout(() => {
-        initCameraManager();
+        initCameraManager().then(r => {});
     }, 500);
 }
 

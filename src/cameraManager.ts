@@ -1,12 +1,6 @@
 import {ActiveCameraStreams, CameraFeed, Recording} from "./include/interfaces";
-import {VideoStream} from "./videoStream";
 import {RecordingStatus} from "./include/enums";
 import {getCameraFeed, getSetting, insertRecording, updateRecordingDuration} from "./sql";
-import {
-    convertScreenshotsToVideo,
-    startCameraCapture,
-    stopCameraCapture
-} from "./videoStream/rtspStreamManager";
 import {v4} from "uuid";
 
 let maxRecordingDuration = 0;
@@ -25,46 +19,15 @@ export const initCameraManager = async () => {
 export const activateCamera = (cameraFeed: CameraFeed, errorCallback: any) => {
     if(cameraFeed === undefined || cameraFeed === null) return;
     if (activeCameraStreams[cameraFeed.id] === undefined || activeCameraStreams[cameraFeed.id] === null) {
-        let cameraStream = new VideoStream({
-            name: cameraFeed.name,
-            url: cameraFeed.url,
-            wsPort: cameraFeed.wsPort,
-            ffmepgOptions: {
-                '-stats': '',
-                '-r': 30
-            },
-            autoStart: true
-        });
-
-        cameraStream.on('camdata', (data: any) => {
-            handleCameraData(cameraFeed, data);
-        });
-        cameraStream.on('streamTimedOut', (data: any) => {
-            deactivateCamera(cameraFeed);
-            errorCallback( {
-                message: "Stream timed out",
-            });
-        });
-        cameraStream.on('exitWithError', (data: any) => {
-            deactivateCamera(cameraFeed);
-            errorCallback(data);
-        });
-
         activeCameraStreams[cameraFeed.id] = {
             id: cameraFeed.id,
-            wsPort: cameraFeed.wsPort,
-            stream: cameraStream
+            wsPort: cameraFeed.wsPort
         };
     }
-
 }
 
 export const deactivateCamera = (cameraFeed: CameraFeed) => {
     if (activeCameraStreams[cameraFeed.id] === undefined || activeCameraStreams[cameraFeed.id] === null) return;
-
-    let stream = activeCameraStreams[cameraFeed.id].stream;
-
-    stream.stop();
     delete activeCameraStreams[cameraFeed.id];
 }
 
@@ -112,7 +75,7 @@ export const startRecording = async () => {
         let cameraFeed = await getCameraFeed(cameraFeedId);
         if(cameraFeed === null) continue;
 
-        startCameraCapture(cameraFeed, recording);
+        //TODO: Implement camera capture
     }
 
     recordingTimeout = setInterval(() => {
@@ -144,7 +107,7 @@ export const stopRecording = async () => {
         if(activeRecording !== null){
             //await convertScreenshotsToVideo(cameraFeed, activeRecording);
         }
-        stopCameraCapture(cameraFeed);
+        //TODO: Implement
     }
 
     if(recordingTimeout){

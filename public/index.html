@@ -21,7 +21,7 @@
           </button>
           <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
             <div class="d-flex gap-2">
-              <img src="./assets/img/logo.png" width="512" height="512" alt="Tabler" class="navbar-brand-image">
+              <img src="./assets/img/logo.png" width="110" height="32" alt="Tabler" class="navbar-brand-image">
               <h1>Timelapse Recorder</h1>
             </div>
           </h1>
@@ -33,7 +33,7 @@
             <div class="container-xl">
               <ul class="navbar-nav">
                 <li class="nav-item active">
-                  <a class="nav-link" href="/">
+                  <a class="nav-link" href="/" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                       <i class="fa-solid fa-house"></i>
                     </span>
@@ -43,12 +43,12 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="/cameras.html">
+                  <a class="nav-link" href="/recordings.html" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                       <i class="fa-solid fa-video"></i>
                     </span>
                     <span class="nav-link-title">
-                      Cameras
+                      Opnames
                     </span>
                   </a>
                 </li>
@@ -73,8 +73,14 @@
             <div class="row align-items-center">
               <div class="col">
                 <h2 class="page-title">
-                  Home
+                  Cameras
                 </h2>
+              </div>
+              <div class="col-auto">
+                <div class="btn btn-primary d-none d-sm-inline-block d-flex gap-1" data-bs-toggle="modal" data-bs-target="#add-camera-model">
+                  <i class="fa-solid fa-plus"></i>
+                  Camera Toevoegen
+                </div>
               </div>
             </div>
           </div>
@@ -82,83 +88,78 @@
         <div class="page-body">
           <div class="container-xl">
             <div class="row row-deck row-cards">
-              <div class="col-sm-6 col-lg-3">
+              <div class="col-12">
                 <div class="card">
-                  <div class="card-body d-flex flex-column gap-2">
-                    <div class="btn btn-success w-full disabled" data-start-recording>
-                      Opname Starten
-                    </div>
-                    <div class="btn btn-danger w-full disabled" data-stop-recording>
-                      Opname Stoppen
-                    </div>
+                  <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap datatable">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th class="w-15">Naam</th>
+                          <th>Url</th>
+                          <th>Interval (Min)</th>
+                          <th>Actieve tijden</th>
+                          <th class="w-5">Aan / Uit</th>
+                          <th class="w-5">Acties</th>
+                        </tr>
+                      </thead>
+                      <tbody data-camera-list></tbody>
+                    </table>
                   </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-lg-3">
-                <div class="card">
-                  <div class="card-body">
-                    <h1>Opname Duur (Min)</h1>
-                    <label class="w-full">
-                      <input type="number" class="form-control w-full" value="0" data-max-recording-duration-input>
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-lg-3">
-                <div class="card">
-                  <div class="card-body">
-                    <h1 data-recording-duration>--:--:--</h1>
-                    <p class="text-muted">Opname tijd</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-lg-3">
-                <div class="card">
-                  <div class="card-body">
-                    <h1><span data-active-camera-count>-</span>/<span data-total-camera-count>-</span></h1>
-                    <p class="text-muted">Cameras actief</p>
-                  </div>
-                </div>
-              </div>
-              <div class="card" style="height: calc(24rem + 10px)">
-                <div class="card-body card-body-scrollable card-body-scrollable-shadow">
-                  <div class="card-header">
-                    <h3 class="card-title">Opnamens</h3>
-                  </div>
-                  <div class="card-body">
-                    <div class="divide-y" data-recordings-container>
-                      <p class="text-center"><i class="fa-solid fa-spinner fa-spin fs-1"></i></p>
-                    </div>
+                  <div class="card-footer d-flex align-items-center">
+                    <p class="m-0 text-muted"><span data-cameras-count>0</span> cameras zichtbaar</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+    </div>
     </div>
 
-    <div data-home-model-container></div>
-
-    <div class="modal modal-blur" id="view-camera-video-model" tabindex="-1">
+    <div class="modal modal-blur" id="add-camera-model" tabindex="-1">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Video Bekijken</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="modal-title">Camera Toevoegen</h5>
           </div>
           <div class="modal-body">
-            <video controls class="view-camera-video">
-              <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-            </video>
+            <div class="errors" data-add-camera-errors-div></div>
+            <div class="row">
+              <div class="col-lg-8">
+                <div class="mb-3">
+                  <label for="camera-name-input" class="form-label">Name</label>
+                  <input id="camera-name-input" type="text" class="form-control" data-add-camera-name-input>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="camera-interval-input" class="form-label">Interval (Min)</label>
+                  <input id="camera-interval-input" type="number" class="form-control" value="1" min="1" max="59" data-add-camera-interval-input>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="camera-url-input" class="form-label">Url</label>
+              <input id="camera-url-input" type="text" class="form-control" data-add-camera-url-input>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="#" class="btn btn-link link-secondary" data-add-camera-close-btn data-bs-dismiss="modal">
+              Annuleren
+            </a>
+            <div class="btn btn-primary ms-auto d-flex gap-1" data-add-camera-btn>
+              <i class="fa-solid fa-plus"></i>
+              Toevoegen
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Tabler Core -->
+    <div class="models" data-camera-models-div></div>
+
     <script src="assets/js/alertify.min.js"></script>
-    <script src="assets/js/moment.min.js"></script>
     <script src="assets/js/tabler.js"></script>
     <script src="assets/js/config.js"></script>
     <script src="assets/js/websocket.js" type="module"></script>
