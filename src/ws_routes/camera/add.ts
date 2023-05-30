@@ -10,7 +10,9 @@ const add = (ws: WebSocket, req: WsMessage) => {
         name: req.data.name,
         url: req.data.url,
         interval: req.data.interval,
-        wsPort: getRandomPort()
+        wsPort: getRandomPort(),
+        activeFrom: req.data.activeFrom,
+        activeTo: req.data.activeTo
     });
 
     let response: WsResponse = {

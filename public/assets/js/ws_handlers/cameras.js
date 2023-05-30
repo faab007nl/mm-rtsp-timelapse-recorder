@@ -19,11 +19,11 @@ export const handleCameraAction = (action, data) => {
             requestCameraList();
             break;
         case 'activated':
-            alertify.notify('Camera Activated', 'success', 2);
+            alertify.notify('Recording Activated', 'success', 2);
             requestCameraList();
             break;
         case 'deactivated':
-            alertify.notify('Camera Deactivated', 'success', 2);
+            alertify.notify('Recording Deactivated', 'success', 2);
             requestCameraList();
             break;
     }
@@ -67,38 +67,43 @@ const renderCameraList = (data) => {
           <td>${camera.id}</td>
           <td>
             <label class="w-full">
-              <input type="text" class="form-control w-full" value="${camera.name}" data-edit-camera-name-input ${camera.active || camera.disabled ? "disabled" : ""}>
+              <input type="text" class="form-control w-full" value="${camera.name}" data-edit-camera-name-input ${camera.active ? "disabled" : ""}>
             </label>
           </td>
           <td>
             <label class="w-full">
-              <input type="text" class="form-control w-full" value="${camera.url}" data-edit-camera-url-input ${camera.active || camera.disabled ? "disabled" : ""}>
+              <input type="text" class="form-control w-full" value="${camera.url}" data-edit-camera-url-input ${camera.active ? "disabled" : ""}>
             </label>
           </td>
           <td>
             <label>
-              <input type="number" class="form-control w-full" value="${camera.interval}" data-edit-camera-interval-input ${camera.active || camera.disabled ? "disabled" : ""}>
+              <input type="number" class="form-control w-full" value="${camera.interval}" data-edit-camera-interval-input ${camera.active ? "disabled" : ""}>
             </label>
           </td>
           <td>
             van
             <label>
-              <input type="time" class="form-control w-full" value="${activeFrom}" data-edit-camera-active-from-input ${camera.active || camera.disabled ? "disabled" : ""}>
+              <input type="time" class="form-control w-full" value="${activeFrom}" data-edit-camera-active-from-input ${camera.active ? "disabled" : ""}>
             </label>
             tot
             <label>
-              <input type="time" class="form-control w-full" value="${activeTo}" data-edit-camera-active-to-input ${camera.active || camera.disabled ? "disabled" : ""}>
+              <input type="time" class="form-control w-full" value="${activeTo}" data-edit-camera-active-to-input ${camera.active ? "disabled" : ""}>
             </label>
           </td>
           <td>
-            <label class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" ${camera.active ? "checked" : ""} ${camera.disabled ? "disabled" : ""} data-edit-camera-active-input>
-            </label>
+            <div class="btn btn-success d-none d-sm-inline-block d-flex gap-1 ${camera.active ? "hidden" : ""}" 
+                data-bs-toggle="modal" data-bs-target="#activate-camera-model-${camera.id}"
+            >
+              Opname Starten
+            </div>
+            <div class="btn btn-danger d-none d-sm-inline-block d-flex gap-1 ${!camera.active ? "hidden" : ""}" data-edit-camera-deactivate-btn>
+              Opname Stoppen
+            </div>
           </td>
           <td>
             <div class="d-flex gap-2">
-              <div ${!camera.active && !camera.disabled ? `data-bs-toggle="modal" data-bs-target="#delete-camera-model-${camera.id}"` : ""}>
-                <div class="delete-btn fs-1 ${camera.active || camera.disabled ? "btn-disabled" : ""}">
+              <div ${!camera.active ? `data-bs-toggle="modal" data-bs-target="#delete-camera-model-${camera.id}"` : ""}>
+                <div class="delete-btn fs-1 ${camera.active ? "btn-disabled" : ""}">
                   <i class="fa-solid fa-trash"></i>
                 </div>
               </div>
@@ -107,7 +112,7 @@ const renderCameraList = (data) => {
        `;
         cameraListDiv.appendChild(row);
 
-        if(!camera.active && !camera.disabled) {
+        if(!camera.active) {
             const deleteModelDiv = document.createElement('div');
             deleteModelDiv.classList.add('modal', 'modal-blur');
             deleteModelDiv.setAttribute('id', `delete-camera-model-${camera.id}`);
@@ -140,6 +145,39 @@ const renderCameraList = (data) => {
             `;
             cameraModelsDiv.appendChild(deleteModelDiv);
         }
+
+        const deleteModelDiv = document.createElement('div');
+        deleteModelDiv.classList.add('modal', 'modal-blur');
+        deleteModelDiv.setAttribute('id', `activate-camera-model-${camera.id}`);
+        deleteModelDiv.innerHTML = `
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Opname voor ${camera.name} starten</h5>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-group">
+                        <label>Opname naam:</label>
+                        <input type="text" class="form-control w-full">
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <div class="btn btn-primary" data-bs-dismiss="modal">
+                      Annuleren
+                    </div>
+                    <div
+                        class="btn btn-success ms-auto d-flex gap-1" 
+                        data-bs-dismiss="modal"
+                        data-camera-id="${camera.id}"
+                        data-edit-camera-activate-btn
+                    >
+                      Opname Starten
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+        cameraModelsDiv.appendChild(deleteModelDiv);
     });
 
     const deleteCameraBtns = document.querySelectorAll('[data-delete-camera]');
@@ -223,16 +261,21 @@ const renderCameraList = (data) => {
         });
     });
 
-    const editCameraActiveInputs = document.querySelectorAll('[data-edit-camera-active-input]');
-    editCameraActiveInputs.forEach(input => {
-        input.addEventListener('change', () => {
+    const editCameraActivateInputs = document.querySelectorAll('[data-edit-camera-activate-btn]');
+    editCameraActivateInputs.forEach(input => {
+        input.addEventListener('click', () => {
+            const cameraId = input.getAttribute('data-camera-id');
+            const recordingName = input.closest('.modal').querySelector('input').value;
+
+            setActive(cameraId, true);
+        });
+    });
+
+    const editCameraDeactivateInputs = document.querySelectorAll('[data-edit-camera-deactivate-btn]');
+    editCameraDeactivateInputs.forEach(input => {
+        input.addEventListener('click', () => {
             const cameraId = input.closest('tr').querySelector('td').innerText;
-            const cameraActive = input.checked;
-            if(cameraActive !== true && cameraActive !== false){
-                alertify.notify('Camera active moet true of false zijn', 'error', 2);
-                return;
-            }
-            setActive(cameraId, cameraActive);
+            setActive(cameraId, false);
         });
     });
 }
@@ -279,9 +322,9 @@ export const updateCamera = (
     }));
 }
 
-export const setActive = (
+export const activateCamera = (
     id,
-    active
+    recordingName
 ) => {
     if(window.ws === undefined) return;
     window.ws.send(JSON.stringify({
@@ -290,7 +333,21 @@ export const setActive = (
         action: 'active',
         data: {
             id,
-            active
+            recordingName
+        }
+    }));
+}
+
+export const deactivateCamera = (
+    id
+) => {
+    if(window.ws === undefined) return;
+    window.ws.send(JSON.stringify({
+        from: window.client_id,
+        category: 'camera',
+        action: 'deactive',
+        data: {
+            id
         }
     }));
 }

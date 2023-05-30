@@ -7,7 +7,8 @@ import list from "./list";
 
 const active = async (ws: WebSocket, req: WsMessage) => {
     let cameraId = req.data.id;
-    let active = req.data.active;
+    let recordingName = req.data.recordingName;
+
     let camera = await getCameraFeed(cameraId);
     if (camera === undefined || camera === null) {
         let response: WsResponse = {
