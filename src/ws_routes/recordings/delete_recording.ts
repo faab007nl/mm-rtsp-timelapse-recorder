@@ -9,8 +9,8 @@ const delete_recording = async (ws: WebSocket, req: WsMessage) => {
     let response: WsResponse = {
         from: getServerUUID(),
         to: req.from,
-        category: 'home',
-        action: 'deleted_recording',
+        category: 'recordings',
+        action: 'deleted',
         data: {}
     }
     ws.send(JSON.stringify(response));

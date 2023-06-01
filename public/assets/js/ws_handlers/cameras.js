@@ -18,12 +18,12 @@ export const handleCameraAction = (action, data) => {
             alertify.notify('Camera Updated', 'success', 2);
             requestCameraList();
             break;
-        case 'activated':
-            alertify.notify('Recording Activated', 'success', 2);
+        case 'recordingStarted':
+            alertify.notify('Recording Started', 'success', 2);
             requestCameraList();
             break;
-        case 'deactivated':
-            alertify.notify('Recording Deactivated', 'success', 2);
+        case 'recordingStopped':
+            alertify.notify('Recording Stopped', 'success', 2);
             requestCameraList();
             break;
     }
@@ -63,47 +63,53 @@ const renderCameraList = (data) => {
         let activeToHours = (camera.activeTo - activeToMinutes) / 60;
         let activeTo = `${activeToHours < 10 ? `0${activeToHours}` : activeToHours}:${activeToMinutes < 10 ? `0${activeToMinutes}` : activeToMinutes}`;
 
+        let active = camera.currentRecordingId !== undefined && camera.currentRecordingId !== null;
+
         row.innerHTML = `
           <td>${camera.id}</td>
           <td>
             <label class="w-full">
-              <input type="text" class="form-control w-full" value="${camera.name}" data-edit-camera-name-input ${camera.active ? "disabled" : ""}>
+              <input type="text" class="form-control w-full" value="${camera.name}" data-edit-camera-name-input ${active ? "disabled" : ""}>
             </label>
           </td>
           <td>
             <label class="w-full">
-              <input type="text" class="form-control w-full" value="${camera.url}" data-edit-camera-url-input ${camera.active ? "disabled" : ""}>
+              <input type="text" class="form-control w-full" value="${camera.url}" data-edit-camera-url-input ${active ? "disabled" : ""}>
             </label>
           </td>
           <td>
             <label>
-              <input type="number" class="form-control w-full" value="${camera.interval}" data-edit-camera-interval-input ${camera.active ? "disabled" : ""}>
+              <input type="number" class="form-control w-full" value="${camera.interval}" data-edit-camera-interval-input ${active ? "disabled" : ""}>
             </label>
           </td>
           <td>
             van
             <label>
-              <input type="time" class="form-control w-full" value="${activeFrom}" data-edit-camera-active-from-input ${camera.active ? "disabled" : ""}>
+              <input type="time" class="form-control w-full" value="${activeFrom}" data-edit-camera-active-from-input ${active ? "disabled" : ""}>
             </label>
             tot
             <label>
-              <input type="time" class="form-control w-full" value="${activeTo}" data-edit-camera-active-to-input ${camera.active ? "disabled" : ""}>
+              <input type="time" class="form-control w-full" value="${activeTo}" data-edit-camera-active-to-input ${active ? "disabled" : ""}>
             </label>
           </td>
           <td>
-            <div class="btn btn-success d-none d-sm-inline-block d-flex gap-1 ${camera.active ? "hidden" : ""}" 
+            <div 
+                class="btn btn-success d-none d-sm-inline-block d-flex gap-1 ${active ? "hidden" : ""}" 
                 data-bs-toggle="modal" data-bs-target="#activate-camera-model-${camera.id}"
             >
               Opname Starten
             </div>
-            <div class="btn btn-danger d-none d-sm-inline-block d-flex gap-1 ${!camera.active ? "hidden" : ""}" data-edit-camera-deactivate-btn>
+            <div 
+                class="btn btn-danger d-none d-sm-inline-block d-flex gap-1 ${!active ? "hidden" : ""}"
+                data-bs-toggle="modal" data-bs-target="#deactivate-camera-model-${camera.id}"
+            >
               Opname Stoppen
             </div>
           </td>
           <td>
             <div class="d-flex gap-2">
-              <div ${!camera.active ? `data-bs-toggle="modal" data-bs-target="#delete-camera-model-${camera.id}"` : ""}>
-                <div class="delete-btn fs-1 ${camera.active ? "btn-disabled" : ""}">
+              <div ${!active ? `data-bs-toggle="modal" data-bs-target="#delete-camera-model-${camera.id}"` : ""}>
+                <div class="delete-btn fs-1 ${active ? "btn-disabled" : ""}">
                   <i class="fa-solid fa-trash"></i>
                 </div>
               </div>
@@ -112,7 +118,7 @@ const renderCameraList = (data) => {
        `;
         cameraListDiv.appendChild(row);
 
-        if(!camera.active) {
+        if(!active) {
             const deleteModelDiv = document.createElement('div');
             deleteModelDiv.classList.add('modal', 'modal-blur');
             deleteModelDiv.setAttribute('id', `delete-camera-model-${camera.id}`);
@@ -146,14 +152,14 @@ const renderCameraList = (data) => {
             cameraModelsDiv.appendChild(deleteModelDiv);
         }
 
-        const deleteModelDiv = document.createElement('div');
-        deleteModelDiv.classList.add('modal', 'modal-blur');
-        deleteModelDiv.setAttribute('id', `activate-camera-model-${camera.id}`);
-        deleteModelDiv.innerHTML = `
+        const activateModelDiv = document.createElement('div');
+        activateModelDiv.classList.add('modal', 'modal-blur');
+        activateModelDiv.setAttribute('id', `activate-camera-model-${camera.id}`);
+        activateModelDiv.innerHTML = `
               <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title">Opname voor ${camera.name} starten</h5>
+                    <h5 class="modal-title">Opname voor <strong>${camera.name}</strong> starten</h5>
                   </div>
                   <div class="modal-body">
                     <div class="form-group">
@@ -177,7 +183,37 @@ const renderCameraList = (data) => {
                 </div>
               </div>
             `;
-        cameraModelsDiv.appendChild(deleteModelDiv);
+        cameraModelsDiv.appendChild(activateModelDiv);
+
+        const deactivateModelDiv = document.createElement('div');
+        deactivateModelDiv.classList.add('modal', 'modal-blur');
+        deactivateModelDiv.setAttribute('id', `deactivate-camera-model-${camera.id}`);
+        deactivateModelDiv.innerHTML = `
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Opname voor <strong>${camera.name}</strong> stoppen</h5>
+                  </div>
+                  <div class="modal-body">
+                    Weet je zeker dat je de opname voor <strong>${camera.name}</strong> wilt stoppen?
+                  </div>
+                  <div class="modal-footer">
+                    <div class="btn btn-primary" data-bs-dismiss="modal">
+                      Annuleren
+                    </div>
+                    <div
+                        class="btn btn-danger ms-auto d-flex gap-1" 
+                        data-bs-dismiss="modal"
+                        data-camera-id="${camera.id}"
+                        data-edit-camera-deactivate-btn
+                    >
+                      Opname Stoppen
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+        cameraModelsDiv.appendChild(deactivateModelDiv);
     });
 
     const deleteCameraBtns = document.querySelectorAll('[data-delete-camera]');
@@ -266,16 +302,15 @@ const renderCameraList = (data) => {
         input.addEventListener('click', () => {
             const cameraId = input.getAttribute('data-camera-id');
             const recordingName = input.closest('.modal').querySelector('input').value;
-
-            setActive(cameraId, true);
+            activateCamera(cameraId, recordingName);
         });
     });
 
     const editCameraDeactivateInputs = document.querySelectorAll('[data-edit-camera-deactivate-btn]');
     editCameraDeactivateInputs.forEach(input => {
         input.addEventListener('click', () => {
-            const cameraId = input.closest('tr').querySelector('td').innerText;
-            setActive(cameraId, false);
+            const cameraId = input.getAttribute('data-camera-id');
+            deactivateCamera(cameraId);
         });
     });
 }
@@ -330,7 +365,7 @@ export const activateCamera = (
     window.ws.send(JSON.stringify({
         from: window.client_id,
         category: 'camera',
-        action: 'active',
+        action: 'activate',
         data: {
             id,
             recordingName
@@ -345,7 +380,7 @@ export const deactivateCamera = (
     window.ws.send(JSON.stringify({
         from: window.client_id,
         category: 'camera',
-        action: 'deactive',
+        action: 'deactivate',
         data: {
             id
         }

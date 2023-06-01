@@ -52,7 +52,7 @@ const handleWsMessage = (message) => {
         case 'main':
             handleMainAction(action, data);
             break;
-        case 'home':
+        case 'recordings':
             handleRecordingsAction(action, data);
             break;
         case 'camera':

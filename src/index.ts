@@ -29,7 +29,7 @@ wss.on('connection', (ws: WebSocket) => {
             case 'camera':
                 handleCameraRoutes(ws, data);
                 break;
-            case 'recording':
+            case 'recordings':
                 handleRecordingRoutes(ws, data);
                 break;
             case 'settings':

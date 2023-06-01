@@ -5,10 +5,10 @@ import delete_recording from "./delete_recording";
 
 const handleRecordingRoutes = (ws: WebSocket, data: WsMessage) => {
     switch (data.action) {
-        case 'recordings':
+        case 'list':
             recordings(ws, data);
             break;
-        case 'delete_recording':
+        case 'delete':
             delete_recording(ws, data);
             break;
     }

@@ -1,119 +1,111 @@
-import {ActiveCameraStreams, CameraFeed, Recording} from "./include/interfaces";
-import {RecordingStatus} from "./include/enums";
-import {getCameraFeed, getSetting, insertRecording, updateRecordingDuration} from "./sql";
-import {v4} from "uuid";
-
-let maxRecordingDuration = 0;
-let activeCameraStreams: ActiveCameraStreams = {};
-let recordingStatus: RecordingStatus = RecordingStatus.STOPPED;
-let recordingTimeout: NodeJS.Timeout|null = null;
-let recordingDuration = 0;
-let lastCameraScreenshot: any = {};
-let activeRecording: Recording|null = null;
+import {Camera, NewRecording, Recording} from "./include/interfaces";
+import {
+    getCameras,
+    getRecording,
+    insertRecording,
+    updateCameraValue,
+    updateRecordingEnded, updateRecordingValue
+} from "./sql";
+import * as path from "path";
+import {createFolder} from "./fileUtils";
+const cron = require('node-cron');
+const ffmpeg = require('fluent-ffmpeg');
 
 export const initCameraManager = async () => {
-    const max_recording_duration = await getSetting('max_recording_duration') ?? { value: 0 };
-    maxRecordingDuration = parseInt(`${max_recording_duration.value}`) * 60;
-}
+    setTimeout(async () => {
+        console.log('Initializing camera manager');
+        cron.schedule('* * * * *', async () => {
+            const cameras = await getCameras();
+            for (const camera of cameras) {
+                if (
+                    camera.currentRecordingId !== undefined && camera.currentRecordingId !== null &&
+                    camera.interval !== undefined && camera.interval !== null
+                ) {
+                    const recording = await getRecording(camera.currentRecordingId);
+                    if (recording === null) return;
 
-export const activateCamera = (cameraFeed: CameraFeed, errorCallback: any) => {
-    if(cameraFeed === undefined || cameraFeed === null) return;
-    if (activeCameraStreams[cameraFeed.id] === undefined || activeCameraStreams[cameraFeed.id] === null) {
-        activeCameraStreams[cameraFeed.id] = {
-            id: cameraFeed.id,
-            wsPort: cameraFeed.wsPort
-        };
-    }
-}
+                    const now = new Date();
+                    const activeFrom = new Date(camera.activeFrom);
+                    const activeTo = new Date(camera.activeTo);
+                    const interval = camera.interval;
 
-export const deactivateCamera = (cameraFeed: CameraFeed) => {
-    if (activeCameraStreams[cameraFeed.id] === undefined || activeCameraStreams[cameraFeed.id] === null) return;
-    delete activeCameraStreams[cameraFeed.id];
-}
-
-export const getActiveCameraStreams = (): ActiveCameraStreams => {
-    return activeCameraStreams;
-}
-
-export const getActiveCameraStreamsCount = (): number => {
-    return Object.keys(activeCameraStreams).length
-}
-
-export const cameraStreamActive = (cameraFeed: CameraFeed): boolean => {
-    return activeCameraStreams[cameraFeed.id] !== undefined && activeCameraStreams[cameraFeed.id] !== null;
-}
-
-const handleCameraData = (cameraFeed: CameraFeed, data: any) => {
-    if(recordingStatus !== RecordingStatus.RECORDING) return;
-    lastCameraScreenshot[cameraFeed.id] = data;
-}
-
-export const getRecordingStatus = (): RecordingStatus => {
-    return recordingStatus;
-}
-
-export const getRecordingDuration = (): number => {
-    return recordingDuration;
-}
-
-export const startRecording = async () => {
-    recordingStatus = RecordingStatus.RECORDING;
-    recordingDuration = 0;
-
-    const recording: Recording = {
-        id: -1,
-        name: v4(),
-        duration: 0,
-        datetime: Date.now()
-    };
-    recording.id = await insertRecording(recording);
-
-    activeRecording = recording;
-
-    for (const [key, value] of Object.entries(activeCameraStreams)) {
-        let cameraFeedId = parseInt(key);
-        let cameraFeed = await getCameraFeed(cameraFeedId);
-        if(cameraFeed === null) continue;
-
-        //TODO: Implement camera capture
-    }
-
-    recordingTimeout = setInterval(() => {
-        recordingDuration++;
-        if (maxRecordingDuration !== 0 && recordingDuration >= maxRecordingDuration) {
-            console.log("Custom max recording duration reached")
-            stopRecording();
-        }
-        if (recordingDuration >= 43200) {
-            console.log("Max recording duration reached")
-            stopRecording();
-        }
-        if (activeRecording === null) return;
-
-        activeRecording.duration = recordingDuration;
-        updateRecordingDuration(activeRecording);
+                    if (
+                        activeFrom !== undefined && activeFrom !== null &&
+                        activeTo !== undefined && activeTo !== null &&
+                        now < activeFrom && now > activeTo &&
+                        now.getMinutes() % interval !== 0
+                    ){
+                        takeScreenshot(camera, recording);
+                    }else{
+                        takeScreenshot(camera, recording);
+                    }
+                }
+            }
+        });
     }, 1000);
 }
 
-export const stopRecording = async () => {
-    recordingStatus = RecordingStatus.STOPPED;
-    recordingDuration = 0;
+const takeScreenshot = (camera: Camera, recording: Recording) => {
+    console.log('Taking screenshot for camera: ' + camera.id);
 
-    for (const [key, value] of Object.entries(activeCameraStreams)) {
-        let cameraFeedId = parseInt(key);
-        let cameraFeed = await getCameraFeed(cameraFeedId);
-        if(cameraFeed === null) continue;
+    const cameraName = camera.name.replace(/ /g, '_');
+    const recordingName = recording.name.replace(/ /g, '_');
 
-        if(activeRecording !== null){
-            //await convertScreenshotsToVideo(cameraFeed, activeRecording);
-        }
-        //TODO: Implement
+    const screenshotsFolder = path.join(__dirname, `../data/screenshots/${cameraName}/${recordingName}/`);
+    const filename = new Date().toISOString().replace(/:/g, '-') + '.jpg';
+    const filepath = path.join(screenshotsFolder, filename);
+
+    createFolder(screenshotsFolder);
+
+    ffmpeg()
+        .input(camera.url)
+        .outputOptions('-frames:v 1')
+        .outputOptions('-q:v 20')
+        .noAudio()
+        .seek(0)
+        .on('start', function(command: any) {
+            console.log('Spawned Ffmpeg with command: ' + command);
+        })
+        .on('error', function(err: { message: string; }, stdout: any, stderr: any) {
+            console.log('Cannot process video: ' + err.message);
+        })
+        .on('end', () => {
+            console.log('Screenshot taken for camera: ' + camera.id);
+            updateRecordingValue(recording.id, "screenshotCount", recording.screenshotCount + 1);
+        })
+        .save(filepath);
+}
+
+
+export const activateCamera = async (cameraFeed: Camera, recordingName: string, callback: any) => {
+    if (cameraFeed === undefined || cameraFeed === null) return;
+    if (cameraFeed.currentRecordingId !== undefined && cameraFeed.currentRecordingId !== null) return;
+    if (recordingName.length === 0) {
+        callback(false);
+        return;
     }
 
-    if(recordingTimeout){
-        clearInterval(recordingTimeout);
-        recordingTimeout = null;
+    let newRecording: NewRecording = {
+        cameraId: cameraFeed.id,
+        name: recordingName
     }
+    let recordingId = await insertRecording(newRecording);
+    updateCameraValue(
+        cameraFeed.id,
+        'currentRecordingId',
+        recordingId
+    );
+    callback(true);
+}
 
-    activeRecording = null;
+export const deactivateCamera = (cameraFeed: Camera) => {
+    if (cameraFeed === undefined || cameraFeed === null) return;
+    if (cameraFeed.currentRecordingId === undefined || cameraFeed.currentRecordingId === null) return;
+
+    updateRecordingEnded(cameraFeed.currentRecordingId);
+    updateCameraValue(
+        cameraFeed.id,
+        'currentRecordingId',
+        null
+    );
 }

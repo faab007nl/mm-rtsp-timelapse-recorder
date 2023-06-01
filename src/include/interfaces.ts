@@ -1,15 +1,27 @@
-import {RecordingVideoStatus} from "./enums";
-
-export interface CameraFeed {
-    id: number;
+export interface NewCamera {
     name: string;
     url: string;
     interval: number;
     activeFrom: number;
     activeTo: number;
-    wsPort: number;
-    active?: boolean;
-    disabled?: boolean;
+}
+
+export interface Camera extends NewCamera{
+    id: number;
+    currentRecordingId?: number;
+}
+
+export interface NewRecording {
+    cameraId: number;
+    name: string;
+}
+
+export interface Recording extends NewRecording {
+    id: number;
+    screenshotCount: number;
+    started: number;
+    ended?: number;
+    videoGenerated: boolean;
 }
 
 export interface Setting {
@@ -26,21 +38,4 @@ export interface WsMessage {
 
 export interface WsResponse extends WsMessage {
     to: string;
-}
-
-export interface ActiveCameraStream {
-    id: number;
-    wsPort: number;
-}
-
-export interface ActiveCameraStreams {
-    [key: number]: ActiveCameraStream;
-}
-
-export interface Recording {
-    id: number;
-    name: string;
-    duration: number;
-    datetime: number;
-    video_status?: RecordingVideoStatus;
 }
